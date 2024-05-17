@@ -16,7 +16,7 @@ const fetchRepliesFromCastWorker = new Worker(
 
 		const replies = await fetchReplies(job.data);
 
-		addRepliesToDB(replies);
+		await addRepliesToDB(replies);
 
 		return job.data;
 	},

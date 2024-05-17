@@ -10,6 +10,8 @@ import { fetchCastFromDBUsingUrl } from '../db/fetchCastFromDBUsingUrl';
 import { getRepliesByUrlQuery } from '../utils/query-constructors/getRepliesByUrlQuery';
 import fetchRepliesFromCastQueue, { fetchReplies } from '../queues/fetchRepliesFromCastQueue';
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
+import { getLikesByUrlQuery } from '../utils/query-constructors/getLikesByUrlQuery';
+import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues/fetchReactionsFromCastQueue';
 
 const router = express.Router();
 
@@ -54,6 +56,7 @@ router.get('/analyze', async (req, res) => {
 	});
 });
 
+// gets the replies just from our firebase DB
 router.get('/get-replies', checkIfWhitelisted, async (req, res) => {
 	const castUrl = req.query.castUrl;
 	const limit = parseInt(req.query.limit as string) || 50;
@@ -81,7 +84,7 @@ router.get('/get-replies', checkIfWhitelisted, async (req, res) => {
 	}
 });
 
-router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
+router.get('/get-reactions', checkIfWhitelisted, async (req, res) => {
 	const castUrl = req.query.castUrl;
 
 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
@@ -90,13 +93,79 @@ router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
 		});
 	}
 
-	// we first check with firebase if the cast is already present in the database
+	// add the data to the queue
+
+	const job = await fetchReactionsFromCastQueue.add(`fetchReactionsForCast: ${castUrl}`, castUrl);
+
+	if (job) {
+		console.log('Cast added to queue to fetch reactions ✅');
+	} else {
+		console.log('Failed to add cast to queue to fetch reactions ❌');
+	}
+
+	res.json({
+		message: 'Reactions fetching initiated',
+	});
+});
+
+// // Testing routes, will be removed in production
+// router.get('/get-likes', checkIfWhitelisted, async (req, res) => {
+// 	const castUrl = req.query.castUrl;
+
+// 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
+// 		return res.status(400).json({
+// 			message: 'Please provide a valid URL',
+// 		});
+// 	}
+
+// 	const data = await fetchLikes(castUrl);
+
+// 	res.json({
+// 		likes: data,
+// 		message: 'Likes Fetched',
+// 	});
+// });
+
+// // Testing routes, will be removed in production
+// router.get('/get-recasts', checkIfWhitelisted, async (req, res) => {
+// 	const castUrl = req.query.castUrl;
+
+// 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
+// 		return res.status(400).json({
+// 			message: 'Please provide a valid URL',
+// 		});
+// 	}
+
+// 	const data = await fetchRecasts(castUrl);
+
+// 	res.json({
+// 		recasts: data,
+// 		message: 'Recasts Fetched',
+// 	});
+// });
+
+router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
+	// this endpoints fetches the cast from the database
+});
+
+router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
+	const castUrl = req.query.castUrl;
+
+	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
+		return res.status(400).json({
+			message: 'Please provide a valid URL',
+		});
+	}
+
+	// // we first check with firebase if the cast is already present in the database
 	// const castData = await fetchCastFromDBUsingUrl(castUrl);
+	// const repliesData = await fetchRepliesFromDBUsingUrl(castUrl);
 
 	// if (castData) {
 	// 	return res.json({
 	// 		message: 'Cast found in the database',
 	// 		cast: castData,
+	// 		replies: repliesData,
 	// 	});
 	// }
 
@@ -119,8 +188,6 @@ router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
 		});
 	}
 
-	// const replies = await fetchReplies(cast.url);
-
 	addCastToDB(cast);
 
 	const job = await fetchRepliesFromCastQueue.add(`fetchRepliesForCast: ${cast.hash} by ${cast.fid}`, cast.url);
@@ -130,9 +197,14 @@ router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
 	} else {
 		console.log('Failed to add cast to queue to fetch replies ❌');
 	}
-	/**
-	 * We start fetching the reactions for the cast by putting it in the queue (likes, replies, etc.)
-	 */
+
+	// const reactionsJob = await fetchReactionsFromCastQueue.add(`fetchReactionsForCast: ${cast.hash} by ${cast.fid}`, cast.url);
+
+	// if (reactionsJob) {
+	// 	console.log('Cast added to queue to fetch reactions ✅');
+	// } else {
+	// 	console.log('Failed to add cast to queue to fetch reactions ❌');
+	// }
 
 	res.json({
 		cast: data.FarcasterCasts.Cast[0],
