@@ -2,7 +2,6 @@ import { firebase } from '../firebase/firebase';
 
 const fetchCastFromDBUsingUrl = async (castUrl: string) => {
 	const castRef = firebase.db.collection('casts').where('url', '==', castUrl);
-
 	const snapshot = await castRef.get();
 
 	if (snapshot.empty) {
