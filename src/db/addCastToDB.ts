@@ -11,8 +11,6 @@ const addCastToDB = async (cast: any) => {
 	console.log('Adding cast to the database with following details: ');
 	console.log('Hash: ', hash);
 	console.log('Fid: ', fid);
-	console.log('Cast: ', cast);
-	console.log('=============================== ');
 
 	// prepare the db reference
 
@@ -20,6 +18,7 @@ const addCastToDB = async (cast: any) => {
 	const castRef = castsRef.doc(hash);
 
 	console.log('DB reference: ', castRef.path);
+	console.log('=============================== ');
 
 	try {
 		// add the data to the db

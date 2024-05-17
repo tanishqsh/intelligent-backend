@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import getWhitelist from './utils/getWhitelist';
 import router from './routes';
 import { initializeAirstack } from './airstack/airstack';
+import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
 
 dotenv.config();
 
