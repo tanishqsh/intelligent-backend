@@ -1,9 +1,12 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
-import { firebase } from './firebase/firebase';
 import getWhitelist from './utils/getWhitelist';
+import router from './routes';
+import { initializeAirstack } from './airstack/airstack';
 
 dotenv.config();
+
+initializeAirstack();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -21,6 +24,8 @@ app.get('/', async (req: Request, res: Response) => {
 		whitelist,
 	});
 });
+
+app.use('/api', router);
 
 app.listen(port, () => {
 	console.log(`Intelligent Backend || Started on PORT ${port} 🟡`);
