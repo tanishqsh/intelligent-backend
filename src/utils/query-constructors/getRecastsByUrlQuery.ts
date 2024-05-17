@@ -1,44 +1,34 @@
-function getRecastsByUrlQuery(url: string) {
+function getRecastsByUrlQuery(url: string, cursor: string = '') {
 	return `
     query MyQuery {
-  FarcasterCasts(
-    input: {filter: {url: {_eq: "${url}"}}, blockchain: ALL,  limit: 200}
+  FarcasterReactions(
+    input: {filter: {criteria: recasted, castUrl: {_eq: "${url}"}}, blockchain: ALL, cursor: "${cursor}", limit: 200}
   ) {
-    Cast {
-      castedAtTimestamp
-      embeds
-      text
-      numberOfRecasts
-      numberOfLikes
-      numberOfReplies
-      channel {
-        channelId
-      }
-      mentions {
-        fid
-        position
-      }
-      socialCapitalValue {
-        rawValue
-        formattedValue
-      }
-    }
-  }
-  Recasts: FarcasterReactions(
-    input: {filter: {castUrl: {_eq: "${url}"}, criteria: recasted}, blockchain: ALL, limit: 200}
-  ) {
-    Recasts: Reaction {
+    Reaction {
       reactedBy {
+        connectedAddresses {
+          address
+          blockchain
+        }
         isFarcasterPowerUser
+        profileDisplayName
         profileHandle
         profileImage
-        profileDisplayName
-         connectedAddresses{
-            address
-            blockchain
-        }
+        updatedAt
+        userId
+      }
+      cast {
+        url
+        hash
       }
     }
+    pageInfo {
+      hasNextPage
+      hasPrevPage
+      nextCursor
+      prevCursor
+    }
+    Criteria
   }
 }
   `;

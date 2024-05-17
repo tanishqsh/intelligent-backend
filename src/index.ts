@@ -4,6 +4,7 @@ import getWhitelist from './utils/getWhitelist';
 import router from './routes';
 import { initializeAirstack } from './airstack/airstack';
 import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
+import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
 
 dotenv.config();
 

@@ -2,7 +2,7 @@ function getRepliesByUrlQuery(url: string, cursor: string = '') {
 	return `
     query MyQuery {
   FarcasterReplies(
-    input: {filter: {parentUrl: {_eq: "${url}"}}, blockchain: ALL, limit: 100, cursor: "${cursor}"}
+    input: {filter: {parentUrl: {_eq: "${url}"}}, blockchain: ALL, limit: 200, cursor: "${cursor}"}
   ) {
     Reply {
       castedAtTimestamp
@@ -21,6 +21,9 @@ function getRepliesByUrlQuery(url: string, cursor: string = '') {
         profileDisplayName
         profileHandle
         profileImage
+        socialCapital {
+          socialCapitalRank
+        }
       }
       hash
       parentHash
