@@ -12,9 +12,13 @@ initializeAirstack();
 
 const app = express();
 const port = process.env.PORT || 3000;
+const cors = require('cors');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Use CORS middleware
+app.use(cors());
 
 /** Log that firebase.db is ready */
 console.log('Firebase DB is ready 🟡');

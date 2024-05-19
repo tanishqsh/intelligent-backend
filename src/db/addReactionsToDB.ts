@@ -5,7 +5,7 @@ const addReactionsToDB = async (reactions: any) => {
 	for (let reaction of reactions) {
 		// get the reply hash
 		console.log('=============================== ');
-		console.log('Adding reaction to the database with following details: ');
+		console.log('Attempting to add reaction to the database with following details: ');
 
 		// console that its a reaction.reactionType by reaction.reactedBy.profileHandle on reaction.cast.hash, in one line
 
@@ -20,21 +20,26 @@ const addReactionsToDB = async (reactions: any) => {
 
 		// prepare the db reference
 		const reactionsRef = firebase.db.collection('casts').doc(reaction.cast.hash).collection('reactions');
-		const reactionRef = reactionsRef.doc(reaction.reactedBy.userId);
-
+		const reactionRef = reactionsRef.doc(`${reaction.reactedBy.userId}_${reaction.reactionType}`);
 		console.log('DB reference: ', reactionRef.path);
 
 		try {
-			// add the data to the db
-			await reactionRef.set({
-				...reaction,
-				lastSyncedAt: firebase.FieldValue.serverTimestamp(),
-				timestamp: firebase.FieldValue.serverTimestamp(),
-			});
+			// check if the reaction already exists
+			const reactionSnapshot = await reactionRef.get();
+			if (!reactionSnapshot.exists) {
+				// reaction doesn't exist, add it to the db
+				await reactionRef.set({
+					...reaction,
+					lastSyncedAt: firebase.FieldValue.serverTimestamp(),
+					timestamp: firebase.FieldValue.serverTimestamp(),
+				});
 
-			console.log('Reaction added to the database successfully');
+				console.log('✅ Reaction added to the database successfully');
+			} else {
+				console.log('Reaction already exists, skipping');
+			}
 		} catch (error) {
-			console.error('Error adding reply to the database:', error);
+			console.error('Error adding reaction to the database:', error);
 		}
 	}
 };

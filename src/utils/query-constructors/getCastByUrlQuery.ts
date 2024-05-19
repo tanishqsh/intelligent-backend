@@ -32,6 +32,10 @@ function getCastByUrlQuery(url: string) {
         profileHandle
         profileImage
         profileDisplayName
+        socialCapital {
+          socialCapitalRank
+          socialCapitalScore
+        }
       }
       channel {
         channelId
