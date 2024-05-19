@@ -12,7 +12,7 @@ const fetchRepliesFromCastQueue = new Queue(queueName, { connection: connectionO
 const fetchRepliesFromCastWorker = new Worker(
 	queueName,
 	async (job) => {
-		console.log('Processing job: ', job.data);
+		console.log('[Replies Worker], Processing Job:', job.data);
 
 		const replies = await fetchReplies(job.data);
 

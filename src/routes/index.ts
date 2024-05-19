@@ -146,6 +146,11 @@ router.get('/get-reactions', checkIfWhitelisted, async (req, res) => {
 
 router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
 	// this endpoints fetches the cast from the database
+
+	// send a placeholder right now
+	return res.json({
+		message: 'This endpoint is not implemented yet',
+	});
 });
 
 router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
@@ -178,11 +183,13 @@ router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
 		});
 	}
 
-	console.log('Data: ', data);
+	console.log('Synching Cash With Hash: ', data?.FarcasterCasts?.Cast[0].hash);
 
 	let cast = data?.FarcasterCasts?.Cast[0];
 
 	if (!data || !cast) {
+		console.log('No data found for the given URL');
+
 		return res.status(404).json({
 			message: 'No data found for the given URL',
 		});
@@ -198,16 +205,18 @@ router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
 		console.log('Failed to add cast to queue to fetch replies ❌');
 	}
 
-	// const reactionsJob = await fetchReactionsFromCastQueue.add(`fetchReactionsForCast: ${cast.hash} by ${cast.fid}`, cast.url);
+	const reactionsJob = await fetchReactionsFromCastQueue.add(`fetchReactionsForCast: ${cast.hash} by ${cast.fid}`, cast.url);
 
-	// if (reactionsJob) {
-	// 	console.log('Cast added to queue to fetch reactions ✅');
-	// } else {
-	// 	console.log('Failed to add cast to queue to fetch reactions ❌');
-	// }
+	if (reactionsJob) {
+		console.log('Cast added to queue to fetch reactions ✅');
+	} else {
+		console.log('Failed to add cast to queue to fetch reactions ❌');
+	}
 
-	res.json({
+	return res.json({
 		cast: data.FarcasterCasts.Cast[0],
+		message: 'Syncing cast',
+		success: true,
 	});
 });
 

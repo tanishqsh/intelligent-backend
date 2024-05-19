@@ -15,7 +15,7 @@ const fetchReactionsFromCastQueue = new Queue(queueName, { connection: connectio
 const fetchReactionsFromCastWorker = new Worker(
 	queueName,
 	async (job) => {
-		console.log('Processing job: ', job.data);
+		console.log('[Reactions Worker], Processing Job: ', job.data);
 
 		const likes = (await fetchLikes(job.data)) as any[];
 		const recasts = (await fetchRecasts(job.data)) as any[];
