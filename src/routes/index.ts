@@ -105,51 +105,6 @@ router.get('/get-reactions', checkIfWhitelisted, async (req, res) => {
 	});
 });
 
-// // Testing routes, will be removed in production
-// router.get('/get-likes', checkIfWhitelisted, async (req, res) => {
-// 	const castUrl = req.query.castUrl;
-
-// 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
-// 		return res.status(400).json({
-// 			message: 'Please provide a valid URL',
-// 		});
-// 	}
-
-// 	const data = await fetchLikes(castUrl);
-
-// 	res.json({
-// 		likes: data,
-// 		message: 'Likes Fetched',
-// 	});
-// });
-
-// // Testing routes, will be removed in production
-// router.get('/get-recasts', checkIfWhitelisted, async (req, res) => {
-// 	const castUrl = req.query.castUrl;
-
-// 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
-// 		return res.status(400).json({
-// 			message: 'Please provide a valid URL',
-// 		});
-// 	}
-
-// 	const data = await fetchRecasts(castUrl);
-
-// 	res.json({
-// 		recasts: data,
-// 		message: 'Recasts Fetched',
-// 	});
-// });
-
-router.get('/get-cast', checkIfWhitelisted, async (req, res) => {
-	// this endpoints fetches the cast from the database
-
-	// send a placeholder right now
-	return res.json({
-		message: 'This endpoint is not implemented yet',
-	});
-});
-
 router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
 	const castUrl = req.query.castUrl;
 
@@ -158,18 +113,6 @@ router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
 			message: 'Please provide a valid URL',
 		});
 	}
-
-	// // we first check with firebase if the cast is already present in the database
-	// const castData = await fetchCastFromDBUsingUrl(castUrl);
-	// const repliesData = await fetchRepliesFromDBUsingUrl(castUrl);
-
-	// if (castData) {
-	// 	return res.json({
-	// 		message: 'Cast found in the database',
-	// 		cast: castData,
-	// 		replies: repliesData,
-	// 	});
-	// }
 
 	const { data, error } = await fetchQuery(getCastByUrlQuery(castUrl));
 
