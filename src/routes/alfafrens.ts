@@ -41,7 +41,14 @@ router.get('/getUserStats', async (req: any, res: any) => {
 
 	const response = await axios.get(`https://www.alfafrens.com/api/trpc/data.getChannelSubscribersAndStakes?channelAddress=${channelAddress}&first=200`);
 
-	const channelData = response.data;
+	const channelData = response?.data?.result?.data;
+
+	if (!channelData) {
+		return res.status(400).json({
+			message: 'Channel data not found',
+			success: false,
+		});
+	}
 
 	res.json({
 		// userData,
