@@ -1,16 +1,13 @@
 import express from 'express';
 import { neynar } from '../neynar/neynar';
 
-import { CastParamType, ReactionsType } from '@neynar/nodejs-sdk';
-import { fetchQuery, fetchQueryWithPagination } from '@airstack/node';
+import { CastParamType } from '@neynar/nodejs-sdk';
+import { fetchQuery } from '@airstack/node';
 import { getCastByUrlQuery } from '../utils/query-constructors/getCastByUrlQuery';
 import checkIfWhitelisted from '../middleware/checkIfWhitelisted';
 import { addCastToDB } from '../db/addCastToDB';
-import { fetchCastFromDBUsingUrl } from '../db/fetchCastFromDBUsingUrl';
-import { getRepliesByUrlQuery } from '../utils/query-constructors/getRepliesByUrlQuery';
 import fetchRepliesFromCastQueue, { fetchReplies } from '../queues/fetchRepliesFromCastQueue';
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
-import { getLikesByUrlQuery } from '../utils/query-constructors/getLikesByUrlQuery';
 import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues/fetchReactionsFromCastQueue';
 
 const router = express.Router();
