@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import getWhitelist from './utils/getWhitelist';
 import router from './routes';
+import alfafrensRouter from './routes/alfafrens';
 import { initializeAirstack } from './airstack/airstack';
 import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
 import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
@@ -32,6 +33,7 @@ app.get('/', async (req: Request, res: Response) => {
 });
 
 app.use('/api', router);
+app.use('/api/alfafrens', alfafrensRouter);
 
 app.listen(port, () => {
 	console.log(`Intelligent Backend || Started on PORT ${port} 🟡`);
