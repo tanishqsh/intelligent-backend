@@ -1,4 +1,5 @@
 import axios from 'axios';
+import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
 
 const express = require('express');
 
@@ -7,6 +8,36 @@ const router = express.Router();
 router.get('/', (req: any, res: any) => {
 	res.json({
 		message: 'AlfaFrens API route 🟡',
+	});
+});
+
+router.get('/jobTestAlfa', async (req: any, res: any) => {
+	let fid = req.query.fid;
+
+	// convert to string
+	fid = fid.toString();
+
+	if (!fid || typeof fid !== 'string') {
+		return res.status(400).json({
+			message: 'Please provide a valid fid',
+		});
+	}
+
+	console.log('Adding job to the queue:', fid);
+
+	// add job to the queue
+	const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue: ${fid}`, fid);
+
+	if (job) {
+		console.log('Job added to queue ✅');
+	} else {
+		console.log('Failed to add job to queue ❌');
+	}
+
+	res.json({
+		message: 'Job added to the queue',
+		success: true,
+		job: job,
 	});
 });
 
