@@ -1,4 +1,6 @@
 import express from 'express';
+import privyClient from '../utils/privyClient';
+import checkPrivyToken from '../middleware/checkPrivyToken';
 
 const router = express.Router();
 
@@ -8,24 +10,13 @@ router.get('/', (req, res) => {
 	});
 });
 
-router.post('/log-user', async (req, res) => {
-	const accessToken = req?.headers?.authorization?.replace('Bearer ', '');
-
-	if (!accessToken) {
-		return res.status(401).json({
-			message: 'Unauthorized',
-		});
-	}
+router.post('/log-user', checkPrivyToken, async (req, res) => {
+	const user = req.body.user;
 
 	return res.json({
 		message: 'User logged',
-		accessToken,
+		fetchedUser: user,
 	});
-
-	// best way to check for the whitelist, and then send back authentication cookie, lets setup privy on the backend here
-	// check if the user is whitelisted
-	// if whitelisted, send back the authentication cookie
-	// if not whitelisted, return a 401
 });
 
 export default router;
