@@ -15,7 +15,7 @@ const job = new CronJob('0 */6 * * *', async () => {
 
 	// add each user to the queue
 	users.forEach((fid) => {
-		// addToQueue(fid);
+		addToQueue(fid);
 	});
 });
 
