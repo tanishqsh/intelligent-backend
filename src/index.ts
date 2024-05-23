@@ -1,13 +1,18 @@
-import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+
+// configure dotenv first and foremost
+dotenv.config();
+
+import express, { Request, Response } from 'express';
 import getWhitelist from './utils/getWhitelist';
 import router from './routes';
 import alfafrensRouter from './routes/alfafrens';
+import userRouter from './routes/users';
 import { initializeAirstack } from './airstack/airstack';
+
+// importing worker queues
 import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
 import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
-
-dotenv.config();
 
 initializeAirstack();
 
@@ -34,6 +39,7 @@ app.get('/', async (req: Request, res: Response) => {
 
 app.use('/api', router);
 app.use('/api/alfafrens', alfafrensRouter);
+app.use('/api/user', userRouter);
 
 app.listen(port, () => {
 	console.log(`Intelligent Backend || Started on PORT ${port} 🟡`);

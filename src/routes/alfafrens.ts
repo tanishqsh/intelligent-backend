@@ -50,12 +50,20 @@ router.get('/getUserStats', async (req: any, res: any) => {
 		});
 	}
 
-	res.json({
-		// userData,
-		channelData,
-		channelAddress: channelAddress,
-		success: true,
-	});
+	try {
+		const { channelData, allMembers } = await fetchAllChannelDataAndMembers(channelAddress);
+		res.json({
+			channelData: channelData,
+			members: allMembers,
+			channelAddress: channelAddress,
+			success: true,
+		});
+	} catch (error) {
+		return res.status(500).json({
+			message: 'Failed to fetch channel data',
+			success: false,
+		});
+	}
 });
 
 const getUserByFid = async (fid: string) => {
@@ -63,6 +71,33 @@ const getUserByFid = async (fid: string) => {
 	return response.data;
 };
 
-// export the router as alfafrensRouter
+const fetchAllChannelDataAndMembers = async (channelAddress: string) => {
+	let allMembers: any[] = [];
+	let skip = 0;
+	const first = 200;
+	let hasMoreData = true;
+	let channelData = null;
+
+	while (hasMoreData) {
+		const response = await axios.get(
+			`https://www.alfafrens.com/api/trpc/data.getChannelSubscribersAndStakes?channelAddress=${channelAddress}&first=${first}&skip=${skip}`
+		);
+		const data = response?.data?.result?.data;
+		const members = data?.members;
+
+		if (members && members.length > 0) {
+			allMembers = allMembers.concat(members);
+			skip += first;
+		} else {
+			hasMoreData = false;
+		}
+
+		if (!channelData) {
+			channelData = data;
+		}
+	}
+
+	return { channelData, allMembers };
+};
 
 export default router;
