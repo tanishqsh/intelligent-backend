@@ -3,7 +3,7 @@ import { firebase } from '../../../firebase/firebase';
 const addChannelInfoToDB = async (userInfo: any) => {
 	console.log(`=============================== Attempting to add channel info for user ${userInfo.fid}`);
 
-	const { aa_address, fid, channelAddress } = userInfo;
+	const { aFUserAddress, fid, handle, channelAddress } = userInfo;
 
 	// planning this ref: users/{fid}
 
@@ -17,7 +17,7 @@ const addChannelInfoToDB = async (userInfo: any) => {
 		try {
 			await userRef.update({
 				alfafrens: {
-					aa_address,
+					aFUserAddress,
 					channelAddress,
 					lastSyncedAt: firebase.FieldValue.serverTimestamp(),
 				},
@@ -31,7 +31,7 @@ const addChannelInfoToDB = async (userInfo: any) => {
 			await userRef.set(
 				{
 					alfafrens: {
-						aa_address,
+						aFUserAddress,
 						channelAddress,
 						lastSyncedAt: firebase.FieldValue.serverTimestamp(),
 						timestamp: firebase.FieldValue.serverTimestamp(),
