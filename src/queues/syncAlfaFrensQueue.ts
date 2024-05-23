@@ -22,7 +22,7 @@ const processJob = async (job: Job) => {
 	userInfo = await fetchUserProfile(job.data);
 
 	if (!userInfo || userInfo.error) {
-		console.log('Failed to fetch user info:', userInfo.error);
+		console.log('Failed to fetch user info (Prolly doesnt exist):', userInfo.error);
 		return;
 	}
 
