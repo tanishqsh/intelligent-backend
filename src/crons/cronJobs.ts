@@ -11,7 +11,7 @@ cron.schedule('0 */6 * * *', async () => {
 	// Add your task logic here
 
 	const users = await fetchUsersFromDB();
-	console.log('Users:', users);
+	console.log('Users:==', users);
 
 	// add each user to the queue
 	users.forEach((fid) => {
