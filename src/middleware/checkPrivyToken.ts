@@ -3,6 +3,7 @@ import privyClient from '../utils/privyClient';
 import getWhitelist from '../utils/getWhitelist';
 import { addUserToDB } from '../db/addUserToDB';
 import { privyUserObjectAdapter } from '../utils/adapters/privy';
+import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
 
 const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) => {
 	const accessToken = req?.headers?.authorization?.replace('Bearer ', '');
@@ -26,6 +27,8 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 
 			// @ts-ignore
 			const { fid } = user.linkedAccounts.find((account) => account.type === 'farcaster');
+
+			const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue: ${fid}`, fid);
 
 			if (!whitelist.includes(fid)) {
 				console.log(`${fid} is not in the whitelist`);
