@@ -27,9 +27,10 @@ const processJob = async (job: Job) => {
 	}
 
 	// should later shift to adapter, maybe once they launch the official API
-	const aa_address = userInfo.result.data.aa_address;
-	const fid = userInfo.result.data.fid;
-	const channelAddress = userInfo.result.data.channels.channeladdress;
+	const aFUserAddress = userInfo.userAddress;
+	const fid = userInfo.fid;
+	const handle = userInfo.handle;
+	const channelAddress = userInfo.channeladdress;
 
 	if (!channelAddress) {
 		console.log('Channel address not found for user:', job.data);
@@ -39,8 +40,9 @@ const processJob = async (job: Job) => {
 	console.log('Channel address found for user, processing members now:', channelAddress);
 
 	await addChannelInfoToDB({
-		aa_address,
+		aFUserAddress,
 		fid,
+		handle,
 		channelAddress,
 	});
 
@@ -60,7 +62,7 @@ const syncAlfaFrensWorker = new Worker(queueName, processJob, {
 
 async function fetchUserProfile(fid: string) {
 	try {
-		const url = `https://www.alfafrens.com/api/trpc/data.getUserByFid?fid=${fid}`;
+		const url = `https://alfafrens.com/api/v0/getUserByFid?fid=${fid}`;
 		const response = await axios.get(url);
 		return response.data;
 	} catch (error) {
@@ -72,16 +74,17 @@ const fetchAllChannelDataAndMembers = async (channelAddress: string) => {
 	let allMembers: any[] = [];
 	let skip = 0;
 	const first = 200;
-	let hasMoreData = true;
 	let channelData = null;
+	let hasMore = true;
 
-	while (hasMoreData) {
+	while (hasMore) {
 		const response = await axios.get(
-			`https://www.alfafrens.com/api/trpc/data.getChannelSubscribersAndStakes?channelAddress=${channelAddress}&first=${first}&skip=${skip}`
+			`https://alfafrens.com/api/v0/getChannelSubscribersAndStakes?channelAddress=${channelAddress}&first=${first}&skip=${skip}`
 		);
 
-		const data = response?.data?.result?.data;
+		const data = response?.data;
 		const members = data?.members;
+		hasMore = data?.hasMore;
 
 		console.log('Round:', skip / first + 1);
 		console.log('Members Length:', members.length);
@@ -89,8 +92,6 @@ const fetchAllChannelDataAndMembers = async (channelAddress: string) => {
 		if (members && members.length > 0) {
 			allMembers = allMembers.concat(members);
 			skip += first;
-		} else {
-			hasMoreData = false;
 		}
 
 		if (!channelData) {
@@ -100,5 +101,8 @@ const fetchAllChannelDataAndMembers = async (channelAddress: string) => {
 
 	return { channelData, allMembers };
 };
+
+// Example usage:
+// fetchAllChannelDataAndMembers('0xa0d5ecba4772ef45f5205b84cf02816bf3a88ec5').then(data => console.log(data));
 
 export default syncAlfaFrensQueue;
