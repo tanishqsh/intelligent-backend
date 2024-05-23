@@ -1,12 +1,12 @@
-import cron from 'node-cron';
+import { CronJob } from 'cron';
 import fetchUsersFromDB from '../db/fetchUsersFromDB';
 import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
 
 // Log message indicating that the cron has been loaded
 console.log('Cron jobs are ready 🟡');
 
-// Schedule a task to run every 6 hours
-cron.schedule('0 */6 * * *', async () => {
+// Define the task to run every 6 hours
+const job = new CronJob('0 */6 * * *', async () => {
 	console.log('Cron job executed every 6 hours');
 	// Add your task logic here
 
@@ -15,9 +15,12 @@ cron.schedule('0 */6 * * *', async () => {
 
 	// add each user to the queue
 	users.forEach((fid) => {
-		addToQueue(fid);
+		// addToQueue(fid);
 	});
 });
+
+// Start the cron job
+job.start();
 
 const addToQueue = async (fid: string) => {
 	const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue: ${fid}`, fid);
