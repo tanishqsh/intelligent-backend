@@ -12,7 +12,7 @@ const getWhitelist = async () => {
 	let whitelist: string[] = [];
 	const snapshot = await firebase.db.collection('whitelist').get();
 	snapshot.forEach((doc) => {
-		whitelist.push(doc.id);
+		whitelist.push(doc.get('fid'));
 	});
 
 	return whitelist;
