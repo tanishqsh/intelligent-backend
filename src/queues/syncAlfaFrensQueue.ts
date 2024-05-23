@@ -1,6 +1,7 @@
 import { Queue, Worker, Job } from 'bullmq';
 import connectionOptions from '../utils/redisConnection';
 import axios from 'axios';
+import { addChannelInfoToDB, addChannelMembersToDB } from '../db/ecosystem/alfafrens/addChannelInfoToDB';
 
 let queueName = 'syncAlfaFrensQueue';
 
@@ -25,6 +26,9 @@ const processJob = async (job: Job) => {
 		return;
 	}
 
+	// should later shift to adapter, maybe once they launch the official API
+	const aa_address = userInfo.result.data.aa_address;
+	const fid = userInfo.result.data.fid;
 	const channelAddress = userInfo.result.data.channels.channeladdress;
 
 	if (!channelAddress) {
@@ -34,16 +38,17 @@ const processJob = async (job: Job) => {
 
 	console.log('Channel address found for user, processing members now:', channelAddress);
 
+	await addChannelInfoToDB({
+		aa_address,
+		fid,
+		channelAddress,
+	});
+
 	const { channelData, allMembers } = await fetchAllChannelDataAndMembers(channelAddress);
 
-	// combine userInfo, channelData, allMembers in a single object
-	const data = {
-		userInfo,
-		channelData,
-		length: allMembers.length,
-	};
+	await addChannelMembersToDB(fid, channelData, allMembers);
 
-	console.log('Data:', data);
+	console.log('Channel members info added to the database successfully');
 };
 
 // declaring the worker
