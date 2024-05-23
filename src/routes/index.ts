@@ -4,11 +4,11 @@ import { neynar } from '../neynar/neynar';
 import { CastParamType } from '@neynar/nodejs-sdk';
 import { fetchQuery } from '@airstack/node';
 import { getCastByUrlQuery } from '../utils/query-constructors/getCastByUrlQuery';
-import checkIfWhitelisted from '../middleware/checkIfWhitelisted';
 import { addCastToDB } from '../db/addCastToDB';
 import fetchRepliesFromCastQueue, { fetchReplies } from '../queues/fetchRepliesFromCastQueue';
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
 import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues/fetchReactionsFromCastQueue';
+import checkPrivyToken from '../middleware/checkPrivyToken';
 
 const router = express.Router();
 
@@ -54,7 +54,7 @@ router.get('/analyze', async (req, res) => {
 });
 
 // gets the replies just from our firebase DB
-router.get('/get-replies', checkIfWhitelisted, async (req, res) => {
+router.get('/get-replies', async (req, res) => {
 	const castUrl = req.query.castUrl;
 	const limit = parseInt(req.query.limit as string) || 50;
 	const startAfter = req.query.startAfter || null;
@@ -81,7 +81,7 @@ router.get('/get-replies', checkIfWhitelisted, async (req, res) => {
 	}
 });
 
-router.get('/get-reactions', checkIfWhitelisted, async (req, res) => {
+router.get('/get-reactions', async (req, res) => {
 	const castUrl = req.query.castUrl;
 
 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
@@ -105,7 +105,7 @@ router.get('/get-reactions', checkIfWhitelisted, async (req, res) => {
 	});
 });
 
-router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
+router.get('/sync-cast', checkPrivyToken, async (req, res) => {
 	const castUrl = req.query.castUrl;
 
 	if (!castUrl || typeof castUrl !== 'string' || !castUrl.startsWith('http')) {
@@ -120,6 +120,14 @@ router.get('/sync-cast', checkIfWhitelisted, async (req, res) => {
 		return res.status(500).json({
 			message: 'An error occurred while fetching the data',
 			error: error,
+		});
+	}
+
+	// if there is no cast hash, it means it is not a farcaster cast, or the cast is not found, or it is NEW
+
+	if (!data?.FarcasterCasts?.Cast[0]?.hash) {
+		return res.status(404).json({
+			message: 'No data found for the given URL',
 		});
 	}
 

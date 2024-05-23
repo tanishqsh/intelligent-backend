@@ -7,18 +7,11 @@ const addCastToDB = async (cast: any) => {
 	// get the user fid
 	const fid = cast.fid;
 
-	console.log('=============================== ');
-	console.log('Adding cast to the database with following details: ');
-	console.log('Hash: ', hash);
-	console.log('Fid: ', fid);
-
+	console.log(`=============================== \nAdding cast to the database with following details: \nHash: ${hash} \nFid: ${fid}`);
 	// prepare the db reference
 
 	const castsRef = firebase.db.collection('casts');
 	const castRef = castsRef.doc(hash);
-
-	console.log('DB reference: ', castRef.path);
-	console.log('=============================== ');
 
 	try {
 		// add the data to the db
