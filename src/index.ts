@@ -13,6 +13,7 @@ import { initializeAirstack } from './airstack/airstack';
 // importing worker queues
 import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
 import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
+import syncAlfaFrensQueue from './queues/syncAlfaFrensQueue';
 
 initializeAirstack();
 
