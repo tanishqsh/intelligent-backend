@@ -32,6 +32,8 @@ const processJob = async (job: Job) => {
 	const handle = userInfo.handle;
 	const channelAddress = userInfo.channeladdress;
 
+	// this is where we will find the fid in the user profiles collection, if it doesn't exists, fetch from airstack, and save it in the user profiles
+
 	if (!channelAddress) {
 		console.log('Channel address not found for user:', job.data);
 		return;

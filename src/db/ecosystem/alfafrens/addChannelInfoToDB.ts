@@ -47,13 +47,13 @@ const addChannelInfoToDB = async (userInfo: any) => {
 };
 
 const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any[]) => {
-	const numOfSubscribers = channelData.numberOfSubscribers;
-	const numOfStakers = channelData.numberOfStakers;
-	const totalSubscriptionFlowRate = channelData.totalSubscriptionFlowRate;
-	const totalSubscriptionInflowAmount = channelData.totalSubscriptionInflowAmount;
-	const totalClaimed = channelData.totalClaimed;
-	const owner = channelData.owner;
-	const currentStaked = channelData.currentStaked;
+	const numOfSubscribers = channelData?.numberOfSubscribers;
+	const numOfStakers = channelData?.numberOfStakers;
+	const totalSubscriptionFlowRate = channelData?.totalSubscriptionFlowRate;
+	const totalSubscriptionInflowAmount = channelData?.totalSubscriptionInflowAmount;
+	const totalClaimed = channelData?.totalClaimed;
+	const owner = channelData?.owner;
+	const currentStaked = channelData?.currentStaked;
 
 	// add it to the database, update userRef alfafrens object
 
