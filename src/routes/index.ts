@@ -3,7 +3,7 @@ import { neynar } from '../neynar/neynar';
 
 import { CastParamType } from '@neynar/nodejs-sdk';
 import { fetchQuery } from '@airstack/node';
-import { getCastByUrlQuery } from '../utils/query-constructors/getCastByUrlQuery';
+import { getCastByUrlQuery } from '../utils/airstack-query-constructors/getCastByUrlQuery';
 import { addCastToDB } from '../db/addCastToDB';
 import fetchRepliesFromCastQueue, { fetchReplies } from '../queues/fetchRepliesFromCastQueue';
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';

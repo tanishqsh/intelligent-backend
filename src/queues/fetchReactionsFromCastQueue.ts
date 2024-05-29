@@ -1,8 +1,8 @@
 import { Queue, Worker } from 'bullmq';
 import connectionOptions from '../utils/redisConnection';
 import { fetchQueryWithPagination } from '@airstack/node';
-import { getLikesByUrlQuery } from '../utils/query-constructors/getLikesByUrlQuery';
-import { getRecastsByUrlQuery } from '../utils/query-constructors/getRecastsByUrlQuery';
+import { getLikesByUrlQuery } from '../utils/airstack-query-constructors/getLikesByUrlQuery';
+import { getRecastsByUrlQuery } from '../utils/airstack-query-constructors/getRecastsByUrlQuery';
 import { addReactionsToDB } from '../db/addReactionsToDB';
 
 let queueName = 'fetchReactionsFromCastQueue';
