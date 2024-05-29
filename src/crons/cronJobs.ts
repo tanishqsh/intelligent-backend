@@ -7,11 +7,11 @@ console.log('Cron jobs are ready 🟡');
 
 // Define the task to run every 6 hours
 const job = new CronJob('0 */6 * * *', async () => {
-	console.log('Cron job executed every 6 hours');
-	// Add your task logic here
+	const now = new Date();
+	console.log('Cron job executed: ', now.toISOString());
 
+	// Add your task logic here
 	const users = await fetchUsersFromDB();
-	console.log('Users:==', users);
 
 	// add each user to the queue
 	users.forEach((fid) => {
@@ -22,7 +22,11 @@ const job = new CronJob('0 */6 * * *', async () => {
 // Start the cron job
 job.start();
 
+/**
+ * Add a user to the queue
+ * @param fid
+ */
 const addToQueue = async (fid: string) => {
 	const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue: ${fid}`, fid);
-	console.log(`Alfa Fren Sync Job for ${fid} added to queue ✅ by cron`);
+	console.log(`AlfaFrens Sync Job for ${fid} added to queue ✅ by cron`);
 };

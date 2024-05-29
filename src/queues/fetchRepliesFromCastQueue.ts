@@ -1,7 +1,7 @@
 import { Queue, Worker } from 'bullmq';
 import connectionOptions from '../utils/redisConnection';
 import { fetchQueryWithPagination } from '@airstack/node';
-import { getRepliesByUrlQuery } from '../utils/query-constructors/getRepliesByUrlQuery';
+import { getRepliesByUrlQuery } from '../utils/airstack-query-constructors/getRepliesByUrlQuery';
 import { addRepliesToDB } from '../db/addRepliesToDB';
 
 let queueName = 'fetchRepliesFromCastQueue';

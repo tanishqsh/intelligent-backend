@@ -15,18 +15,33 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 	}
 
 	try {
+		// verify the token with the privyClient
 		const verifiedClaims = await privyClient.verifyAuthToken(accessToken);
+
+		// if the claims exist, log the user in
 		if (verifiedClaims) {
 			console.log(`Login verified:`, verifiedClaims.userId);
+
+			// get the array of users in the whitelist from the database
 			const whitelist = await getWhitelist();
+
+			// get the user from privy
 			const user = await privyClient.getUser(verifiedClaims.userId);
 
+			// use our custom adapter to convert the user object to the format we need
 			const privyUser = privyUserObjectAdapter(user);
 
-			console.log(`User obtained from privy:`, privyUser.fid);
+			const { fid } = privyUser;
 
-			// @ts-ignore
-			const { fid } = user.linkedAccounts.find((account) => account.type === 'farcaster');
+			// if there is no fid in the user object, return an error
+			if (!fid) {
+				return res.status(403).json({
+					message: 'Unauthorized: No FID found in the user object',
+				});
+			}
+
+			// log the user obtained from privy
+			console.log(`User obtained from privy:`, privyUser.fid);
 
 			const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue: ${fid}`, fid);
 
@@ -43,7 +58,6 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 	} catch (error) {
 		console.log(`Token verification failed with error ${error}.`);
 	}
-
 	next();
 };
 
