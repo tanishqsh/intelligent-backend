@@ -2,6 +2,8 @@ import { CronJob } from 'cron';
 import fetchUsersFromDB from '../db/fetchUsersFromDB';
 import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
 
+import './mimirToFirebase/syncFollowerCount';
+
 // Log message indicating that the cron has been loaded
 console.log('Cron jobs are ready 🟡');
 

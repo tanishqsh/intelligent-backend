@@ -16,7 +16,12 @@ import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
 import syncAlfaFrensQueue from './queues/syncAlfaFrensQueue';
 import './crons/cronJobs';
 
+// mimir
+import { initializeMimir, query } from './mimir/mimir';
+import { getFollowersCount } from './mimir/sql/followersQueries';
+
 initializeAirstack();
+initializeMimir();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -39,6 +44,21 @@ app.get('/', async (req: Request, res: Response) => {
 	});
 });
 
+app.get('/mimir', async (req: Request, res: Response) => {
+	const fid = 2341;
+	const get_followers_by_fid_query = getFollowersCount(fid);
+
+	const start = Date.now();
+	const { rows } = await query(get_followers_by_fid_query);
+	const duration = Date.now() - start;
+
+	res.json({
+		data: rows,
+		queryDuration: `${duration}ms`,
+		lastSynched: new Date().toISOString(),
+		message: '🟡',
+	});
+});
 app.use('/api', router);
 app.use('/api/alfafrens', alfafrensRouter);
 app.use('/api/user', userRouter);
