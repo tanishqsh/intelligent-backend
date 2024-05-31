@@ -19,6 +19,7 @@ import './crons/cronJobs';
 // mimir
 import { initializeMimir, query } from './mimir/mimir';
 import { getFollowersCount } from './mimir/sql/followersQueries';
+import axios from 'axios';
 
 initializeAirstack();
 initializeMimir();
@@ -62,6 +63,35 @@ app.get('/mimir', async (req: Request, res: Response) => {
 app.use('/api', router);
 app.use('/api/alfafrens', alfafrensRouter);
 app.use('/api/user', userRouter);
+
+app.get('/degen-allowance', async (req: Request, res: Response) => {
+	const fid = req.query.fid;
+
+	if (!fid) {
+		return res.status(400).json({
+			message: 'Invalid request, fid is required',
+		});
+	}
+
+	const url = 'https://degentipme-3f9959094869.herokuapp.com/api/get_allowance?fid=2341';
+
+	try {
+		const response = await axios.get(url);
+
+		if (response.data) {
+			return res.json({
+				...response.data?.allowance,
+				message: 'Allowance fetched successfully',
+				success: true,
+			});
+		}
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			message: 'An error occured while fetching allowance',
+		});
+	}
+});
 
 app.listen(port, () => {
 	console.log(`Intelligent Backend || Started on PORT ${port} 🟡`);
