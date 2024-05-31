@@ -8,6 +8,7 @@ import getWhitelist from './utils/getWhitelist';
 import router from './routes';
 import alfafrensRouter from './routes/alfafrens';
 import userRouter from './routes/users';
+import degenRouter from './routes/degen';
 import { initializeAirstack } from './airstack/airstack';
 
 // importing worker queues
@@ -64,34 +65,10 @@ app.use('/api', router);
 app.use('/api/alfafrens', alfafrensRouter);
 app.use('/api/user', userRouter);
 
-app.get('/degen-allowance', async (req: Request, res: Response) => {
-	const fid = req.query.fid;
-
-	if (!fid) {
-		return res.status(400).json({
-			message: 'Invalid request, fid is required',
-		});
-	}
-
-	const url = 'https://degentipme-3f9959094869.herokuapp.com/api/get_allowance?fid=2341';
-
-	try {
-		const response = await axios.get(url);
-
-		if (response.data) {
-			return res.json({
-				...response.data?.allowance,
-				message: 'Allowance fetched successfully',
-				success: true,
-			});
-		}
-	} catch (error) {
-		res.status(500).json({
-			success: false,
-			message: 'An error occured while fetching allowance',
-		});
-	}
-});
+/**
+ * Get allowance for a degen
+ */
+app.use('/api/degen', degenRouter);
 
 app.listen(port, () => {
 	console.log(`Intelligent Backend || Started on PORT ${port} 🟡`);
