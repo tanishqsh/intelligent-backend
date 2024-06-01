@@ -9,6 +9,7 @@ import router from './routes';
 import alfafrensRouter from './routes/alfafrens';
 import userRouter from './routes/users';
 import degenRouter from './routes/degen';
+import mimirRouter from './mimir/router/';
 import { initializeAirstack } from './airstack/airstack';
 
 // importing worker queues
@@ -64,6 +65,7 @@ app.get('/mimir', async (req: Request, res: Response) => {
 app.use('/api', router);
 app.use('/api/alfafrens', alfafrensRouter);
 app.use('/api/user', userRouter);
+app.use('/api/mimir', mimirRouter);
 
 /**
  * Get allowance for a degen
