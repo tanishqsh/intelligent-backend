@@ -30,8 +30,6 @@ const jobProcess = async (job: Job) => {
 		lastSynched: new Date().toISOString(),
 	};
 
-	console.log('UserStat:', userStat);
-
 	// add follower count to firebase
 	try {
 		await addFollowerCountToFirebase(userStat);

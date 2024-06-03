@@ -13,7 +13,6 @@ const addChannelInfoToDB = async (userInfo: any) => {
 	const userSnapshot = await userRef.get();
 
 	if (userSnapshot.exists) {
-		console.log(`User ${fid} already exists in the database. Updating channel info`);
 		try {
 			await userRef.update({
 				alfafrens: {
@@ -64,7 +63,6 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 	const userSnapshot = await userRef.get();
 
 	if (userSnapshot.exists) {
-		console.log(`User ${fid} already exists in the database. Updating channel members info`);
 		try {
 			await userRef.set(
 				{
@@ -81,14 +79,12 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 				},
 				{ merge: true }
 			);
-			console.log(`Channel members info for user ${fid} updated successfully`);
 		} catch (error) {
 			console.error(`Error updating user ${fid} in the database:`, error);
 		}
 	}
 
 	// now the loop with allMembers
-
 	const membersRef = userRef.collection('alfafrensMembers');
 
 	allMembers.forEach(async (member) => {
@@ -97,13 +93,11 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 		const memberSnapshot = await memberRef.get();
 
 		if (memberSnapshot.exists) {
-			console.log(`Member ${member.fid} already exists in the database. Updating member info`);
 			try {
 				await memberRef.update({
 					...member,
 					lastSyncedAt: firebase.FieldValue.serverTimestamp(),
 				});
-				console.log(`Member ${member.fid} updated successfully under ${fid}'s channel membership`);
 			} catch (error) {
 				console.error(`Error updating member ${member.fid} in the database:`, error);
 			}
@@ -117,7 +111,6 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 					},
 					{ merge: true }
 				);
-				console.log(`Member ${member.fid} added to the ${fid}'s channel membership successfully`);
 			} catch (error) {
 				console.error(`Error adding member ${member.fid} to the database:`, error);
 			}

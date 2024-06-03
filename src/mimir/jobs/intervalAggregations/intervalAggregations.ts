@@ -1,0 +1,35 @@
+import { Queue, Worker, Job } from 'bullmq';
+import connectionOptions from '../../../utils/redisConnection';
+
+import processIntervalReactions from './processIntervalReactions';
+import processIntervalMentions from './processIntervalMentions';
+
+export enum intervalJobType {
+	reactions = 'reactions',
+	mentions = 'mentions',
+}
+
+let queueName = 'mimir_intervalAggregations';
+
+// this is a general worker that works on different types of aggregations, specifically intervals
+const intervalAggregationsQueue = new Queue(queueName, { connection: connectionOptions });
+
+const process = async (job: Job) => {
+	const { fid, type } = job.data;
+
+	switch (type) {
+		case intervalJobType.reactions:
+			await processIntervalReactions(fid);
+			break;
+
+		case intervalJobType.mentions:
+			await processIntervalMentions(fid);
+			break;
+		default:
+			console.error('Invalid job type');
+	}
+};
+
+const intervalAggregationsWorker = new Worker(queueName, process, { connection: connectionOptions });
+
+export default intervalAggregationsQueue;

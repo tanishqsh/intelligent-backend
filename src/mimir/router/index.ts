@@ -1,9 +1,7 @@
 import express from 'express';
-import { getFollowersPerHourLast24Hours } from '../sql/followersQueries';
 import { query } from '../mimir';
-import { getLikesPerHourLast24Hours } from '../sql/likesQueries';
-import { getRecastsPerHourLast24Hours } from '../sql/recastsQueries';
 import { chart1Query } from '../sql/chart1Query';
+import { globalUserUpdateQueue } from '../../crons/cronJobs';
 
 const router = express.Router();
 
@@ -50,13 +48,15 @@ router.get('/get-chart1', async (req, res) => {
 				data: recastsData,
 			},
 			{
-				id: 'Followers Gained',
+				id: 'Followers',
 				data: followersData,
 			},
 			// Add likes and recasts data here when those functions are implemented
 		];
 
-		console.log('graphData', graphData);
+		// log the duration of the query with the message
+		const currentTime = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+		console.log(`API Query duration: ${duration}ms, Current time: ${currentTime} EST`);
 
 		res.json({
 			graphData,
@@ -68,13 +68,27 @@ router.get('/get-chart1', async (req, res) => {
 	}
 });
 
+router.get('/update-user', async (req, res) => {
+	const fid = req.query.fid as string;
+
+	if (!fid) {
+		return res.status(400).json({ error: 'Invalid fid' });
+	}
+
+	await globalUserUpdateQueue(fid);
+
+	res.json({
+		message: 'User added to the queue',
+	});
+});
+
 async function getChartData(fid: number) {
 	const q = chart1Query(fid);
 	const { rows } = await query(q);
-	// rows contains 4 columns:
-	// hour, new_followers, likes, recasts, we want each of those to be in their own array for the graph
 
-	// Initialize the arrays
+	/**
+	 *  What we are doing here is to loop through the rows and populate the arrays, followersData, likesData, and recastsData to create the graphData object.
+	 */
 	const followersData: FollowerData[] = [];
 	const likesData: LikeData[] = [];
 	const recastsData: RecastData[] = [];

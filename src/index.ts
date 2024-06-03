@@ -21,7 +21,6 @@ import './crons/cronJobs';
 // mimir
 import { initializeMimir, query } from './mimir/mimir';
 import { getFollowersCount } from './mimir/sql/followersQueries';
-import axios from 'axios';
 
 initializeAirstack();
 initializeMimir();

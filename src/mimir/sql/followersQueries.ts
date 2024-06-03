@@ -12,7 +12,6 @@ export function getFollowersCount(fid: number): string {
     FROM 
         links
     WHERE 
-        type = 'follow' AND 
         deleted_at IS NULL AND
         target_fid = ${fid}
     GROUP BY 
@@ -43,4 +42,26 @@ FROM
     follower_events
 ORDER BY
     hour;`;
+}
+
+export function getIntervalFollowerCount(fid: number): string {
+	return `
+    SELECT 
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '24 hours') AS followers_gain_24h,
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '48 hours' AND timestamp < NOW() - INTERVAL '24 hours') AS followers_gain_prev_24h,
+    
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '7 days') AS followers_gain_7d,
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '14 days' AND timestamp < NOW() - INTERVAL '7 days') AS followers_gain_prev_7d,
+    
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '30 days') AS followers_gain_30d,
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '60 days' AND timestamp < NOW() - INTERVAL '30 days') AS followers_gain_prev_30d,
+    
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '180 days') AS followers_gain_180d,
+    COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '360 days' AND timestamp < NOW() - INTERVAL '180 days') AS followers_gain_prev_180d
+    FROM 
+        links
+    WHERE 
+        target_fid = ${fid}
+        AND deleted_at IS NULL;
+    `;
 }
