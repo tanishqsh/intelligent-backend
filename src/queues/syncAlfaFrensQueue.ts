@@ -39,8 +39,6 @@ const processJob = async (job: Job) => {
 		return;
 	}
 
-	console.log('Channel address found for user, processing members now:', channelAddress);
-
 	await addChannelInfoToDB({
 		aFUserAddress,
 		fid,
