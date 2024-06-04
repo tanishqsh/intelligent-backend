@@ -65,3 +65,29 @@ export function getIntervalFollowerCount(fid: number): string {
         AND deleted_at IS NULL;
     `;
 }
+
+export function getImpactFollowersByDuration(fid: number, duration: string): string {
+	return `
+    WITH recent_follows AS (
+    SELECT fid, timestamp
+    FROM links
+    WHERE target_fid = ${fid}
+      AND type = 'follow'
+      AND timestamp >= NOW() - INTERVAL '${duration}'
+)
+
+SELECT 
+    rf.fid AS follower_fid, 
+    rf.timestamp AS follow_timestamp,
+    fc.follower_count, 
+    p.data->>'display' AS display_name, 
+    p.data->>'username' AS username, 
+    p.data->>'pfp' AS pfp
+FROM recent_follows rf
+JOIN follower_counts_mv fc ON rf.fid = fc.fid
+JOIN profiles p ON rf.fid = p.fid
+WHERE fc.follower_count > 10000
+ORDER BY fc.follower_count DESC
+LIMIT 10;
+    `;
+}
