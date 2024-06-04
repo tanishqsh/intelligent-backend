@@ -4,8 +4,8 @@ import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
 import followerCountQueue from '../mimir/jobs/followerCount';
 import userTopCastsQueue from '../mimir/jobs/userTopCasts';
 import Duration from '../mimir/sql/castsQueries/Duration';
-import intervalFollowerCountQueue from '../mimir/jobs/intervalFollowerCount';
 import intervalAggregationsQueue, { intervalJobType } from '../mimir/jobs/intervalAggregations/intervalAggregations';
+import intervalListsQueue, { intervalListsJobType } from '../mimir/jobs/intervalLists/intervalLists';
 
 // Log message indicating that the cron has been loaded
 console.log('Cron jobs are ready 🟡');
@@ -41,33 +41,57 @@ export const globalUserUpdateQueue = async (fid: string) => {
 		{ queue: syncAlfaFrensQueue, name: `syncAlfaFrensQueue: ${fid}`, data: fid, log: `🚄 ALFAFRENS SYNC QUEUE – FID: ${fid}` },
 		{ queue: followerCountQueue, name: `syncFollowerCount: ${fid}`, data: fid, log: `🚄 FOLLOWER COUNT SYNC QUEUE – FID: ${fid}` },
 		{
-			queue: userTopCastsQueue,
-			name: `syncUserStats: ${fid}`,
-			data: { fid, duration: Duration.HOURS_24, label: '24h' },
+			queue: intervalListsQueue,
+			name: `userTopCast24h: ${fid}`,
+			data: { fid, duration: Duration.HOURS_24, label: '24h', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 24h`,
 		},
 		{
-			queue: userTopCastsQueue,
-			name: `syncUserStats: ${fid}`,
-			data: { fid, duration: Duration.DAYS_7, label: '7d' },
+			queue: intervalListsQueue,
+			name: `userTopCast7d: ${fid}`,
+			data: { fid, duration: Duration.DAYS_7, label: '7d', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 7d`,
 		},
 		{
-			queue: userTopCastsQueue,
-			name: `syncUserStats: ${fid}`,
-			data: { fid, duration: Duration.DAYS_30, label: '30d' },
+			queue: intervalListsQueue,
+			name: `userTopCast30d: ${fid}`,
+			data: { fid, duration: Duration.DAYS_30, label: '30d', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 30d`,
 		},
 		{
-			queue: userTopCastsQueue,
-			name: `syncUserStats: ${fid}`,
-			data: { fid, duration: Duration.DAYS_180, label: '180d' },
+			queue: intervalListsQueue,
+			name: `userTopCast180d: ${fid}`,
+			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 180d`,
 		},
 		{
-			queue: intervalFollowerCountQueue,
+			queue: intervalListsQueue,
+			name: `impactFollowers: ${fid} - 24h`,
+			data: { fid, duration: Duration.HOURS_24, label: '24h', type: intervalListsJobType.impactFollowers },
+			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 24h`,
+		},
+		{
+			queue: intervalListsQueue,
+			name: `impactFollowers: ${fid} - 7d`,
+			data: { fid, duration: Duration.DAYS_7, label: '7d', type: intervalListsJobType.impactFollowers },
+			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 7d`,
+		},
+		{
+			queue: intervalListsQueue,
+			name: `impactFollowers: ${fid} - 30d`,
+			data: { fid, duration: Duration.DAYS_30, label: '30d', type: intervalListsJobType.impactFollowers },
+			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 30d`,
+		},
+		{
+			queue: intervalListsQueue,
+			name: `impactFollowers: ${fid} - 180d`,
+			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.impactFollowers },
+			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 180d`,
+		},
+		{
+			queue: intervalAggregationsQueue,
 			name: `intervalFollowerCount: ${fid}`,
-			data: fid,
+			data: { fid, type: intervalJobType.followerCount },
 			log: `🚄 INTERVAL FOLLOWER COUNT SYNC QUEUE – FID: ${fid}`,
 		},
 		{

@@ -3,10 +3,12 @@ import connectionOptions from '../../../utils/redisConnection';
 
 import processIntervalReactions from './processIntervalReactions';
 import processIntervalMentions from './processIntervalMentions';
+import processIntervalFollowerCount from './processIntervalFollowerCount';
 
 export enum intervalJobType {
 	reactions = 'reactions',
 	mentions = 'mentions',
+	followerCount = 'followerCount',
 }
 
 let queueName = 'mimir_intervalAggregations';
@@ -24,6 +26,10 @@ const process = async (job: Job) => {
 
 		case intervalJobType.mentions:
 			await processIntervalMentions(fid);
+			break;
+
+		case intervalJobType.followerCount:
+			await processIntervalFollowerCount(fid);
 			break;
 		default:
 			console.error('Invalid job type');
