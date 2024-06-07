@@ -88,6 +88,10 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 	const membersRef = userRef.collection('alfafrensMembers');
 
 	allMembers.forEach(async (member) => {
+		if (!member.fid) {
+			return;
+		}
+
 		const memberRef = membersRef.doc(member.fid.toString());
 
 		const memberSnapshot = await memberRef.get();

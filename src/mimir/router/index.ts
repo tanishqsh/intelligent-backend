@@ -5,6 +5,7 @@ import { globalUserUpdateQueue } from '../../crons/cronJobs';
 import Duration from '../sql/castsQueries/Duration';
 import { firebase } from '../../firebase/firebase';
 import checkPrivyToken from '../../middleware/checkPrivyToken';
+import syncAlfaFrensQueue from '../../queues/syncAlfaFrensQueue';
 
 const router = express.Router();
 
@@ -98,38 +99,14 @@ router.get('/get-chart1', async (req, res) => {
 	}
 });
 
-router.get('/update-user', checkPrivyToken, async (req, res) => {
+router.get('/update-user', async (req, res) => {
 	const fid = req.query.fid as string;
 
 	if (!fid) {
 		return res.status(400).json({ error: 'Invalid fid' });
 	}
 
-	// use firebase to get the value of user_stats (collection) > fid (document) > lastSynched
-	const doc = await firebase.db.collection('user_stats').doc(fid).get();
-	const data = doc.data();
-
-	if (!data || !data.lastSynched) {
-		await globalUserUpdateQueue(fid);
-		return res.json({
-			message: 'User added to the queue',
-		});
-	}
-
-	const lastSynched = data.lastSynched;
-
-	// if the sync is less than 30 minutes ago, return a message that the user is already up to date
-	const lastSynchedDate = new Date(lastSynched);
-	const now = new Date();
-
-	const diff = now.getTime() - lastSynchedDate.getTime();
-
-	if (diff < 30 * 60 * 1000) {
-		return res.json({
-			message: 'User is already up to date',
-		});
-	}
-
+	const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue ${fid}`, { fid });
 	await globalUserUpdateQueue(fid);
 
 	res.json({
