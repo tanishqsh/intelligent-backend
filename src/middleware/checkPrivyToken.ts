@@ -51,7 +51,7 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 				});
 			} else {
 				await addUserToDB(privyUser);
-				await globalUserUpdateQueue(fid);
+				await globalUserUpdateQueue(fid, true);
 				console.log(`${fid} is in the whitelist`);
 			}
 		}
