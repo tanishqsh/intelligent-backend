@@ -72,7 +72,7 @@ export function getImpactFollowersByDuration(fid: number, duration: string): str
     SELECT fid, timestamp
     FROM links
     WHERE target_fid = ${fid}
-      AND type = 'follow'
+      AND deleted_at IS NULL
       AND timestamp >= NOW() - INTERVAL '${duration}'
 )
 
@@ -86,6 +86,32 @@ SELECT
 FROM recent_follows rf
 JOIN follower_counts_mv fc ON rf.fid = fc.fid
 JOIN profiles p ON rf.fid = p.fid
+WHERE fc.follower_count > 10000
+ORDER BY fc.follower_count DESC
+LIMIT 10;
+    `;
+}
+
+export function getImpactUnfollowersByDuration(fid: number, duration: string): string {
+	return `
+    WITH recent_unfollows AS (
+    SELECT fid, deleted_at AS timestamp
+    FROM links
+    WHERE target_fid = ${fid}
+      AND deleted_at IS NOT NULL
+      AND deleted_at >= NOW() - INTERVAL '${duration}'
+)
+
+SELECT 
+    ru.fid AS unfollower_fid, 
+    ru.timestamp AS unfollow_timestamp,
+    fc.follower_count, 
+    p.data->>'display' AS display_name, 
+    p.data->>'username' AS username, 
+    p.data->>'pfp' AS pfp
+FROM recent_unfollows ru
+JOIN follower_counts_mv fc ON ru.fid = fc.fid
+JOIN profiles p ON ru.fid = p.fid
 WHERE fc.follower_count > 10000
 ORDER BY fc.follower_count DESC
 LIMIT 10;

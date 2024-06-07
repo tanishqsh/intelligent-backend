@@ -1,7 +1,8 @@
 import express from 'express';
 import { query } from '../mimir';
-import { chart1Query } from '../sql/chart1Query';
+import { chart1Query180D, chart1Query24D, chart1Query30D, chart1Query7D } from '../sql/chart1Query';
 import { globalUserUpdateQueue } from '../../crons/cronJobs';
+import Duration from '../sql/castsQueries/Duration';
 
 const router = express.Router();
 
@@ -28,14 +29,41 @@ router.get('/', async (req, res) => {
 
 router.get('/get-chart1', async (req, res) => {
 	const fid = Number(req.query.fid);
+	const interval = req.query.duration as string;
 
-	if (isNaN(fid)) {
+	if (!fid || isNaN(fid)) {
 		return res.status(400).json({ error: 'Invalid fid' });
+	}
+
+	if (!interval) {
+		return res.status(400).json({ error: 'Invalid duration' });
+	}
+
+	// inverval will be either 24H, 7D, 30D, 180D, if not, return 400
+	if (!['24H', '7D', '30D', '180D'].includes(interval)) {
+		return res.status(400).json({ error: 'Invalid duration' });
+	}
+
+	let q_interval = Duration.HOURS_24;
+
+	switch (interval) {
+		case '24H':
+			q_interval = Duration.HOURS_24;
+			break;
+		case '7D':
+			q_interval = Duration.DAYS_7;
+			break;
+		case '30D':
+			q_interval = Duration.DAYS_30;
+			break;
+		case '180D':
+			q_interval = Duration.DAYS_180;
+			break;
 	}
 
 	try {
 		const start = Date.now();
-		const { followersData, likesData, recastsData } = await getChartData(fid);
+		const { followersData, likesData, recastsData } = await getChartData(fid, q_interval);
 		const duration = Date.now() - start;
 
 		const graphData = [
@@ -82,8 +110,23 @@ router.get('/update-user', async (req, res) => {
 	});
 });
 
-async function getChartData(fid: number) {
-	const q = chart1Query(fid);
+async function getChartData(fid: number, duration: Duration) {
+	let q = chart1Query24D(fid);
+
+	console.log('Received Query for ' + duration + ' duration.');
+
+	switch (duration) {
+		case Duration.DAYS_7:
+			q = chart1Query7D(fid);
+			break;
+		case Duration.DAYS_30:
+			q = chart1Query30D(fid);
+			break;
+		case Duration.DAYS_180:
+			q = chart1Query180D(fid);
+			break;
+	}
+
 	const { rows } = await query(q);
 
 	/**
@@ -96,15 +139,15 @@ async function getChartData(fid: number) {
 	// Loop through the rows and populate the arrays
 	for (const row of rows) {
 		followersData.push({
-			x: row.hour,
+			x: row.hour || row.day,
 			y: row.new_followers,
 		});
 		likesData.push({
-			x: row.hour,
+			x: row.hour || row.day,
 			y: row.likes,
 		});
 		recastsData.push({
-			x: row.hour,
+			x: row.hour || row.day,
 			y: row.recasts,
 		});
 	}
