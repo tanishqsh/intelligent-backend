@@ -107,7 +107,7 @@ router.get('/update-user', checkPrivyToken, async (req, res) => {
 	}
 
 	// const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue ${fid}`, { fid });
-	await globalUserUpdateQueue(fid);
+	await globalUserUpdateQueue(fid, true);
 
 	res.json({
 		message: 'User added to the queue',
