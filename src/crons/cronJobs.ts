@@ -6,12 +6,13 @@ import userTopCastsQueue from '../mimir/jobs/userTopCasts';
 import Duration from '../mimir/sql/castsQueries/Duration';
 import intervalAggregationsQueue, { intervalJobType } from '../mimir/jobs/intervalAggregations/intervalAggregations';
 import intervalListsQueue, { intervalListsJobType } from '../mimir/jobs/intervalLists/intervalLists';
+import { firebase } from '../firebase/firebase';
 
 // Log message indicating that the cron has been loaded
 console.log('Cron jobs are ready 🟡');
 
-// This cron job will run every hour
-const job = new CronJob('0 0 * * * *', async () => {
+// This cron job will run every 10 minutes
+const job = new CronJob('0 */10 * * * *', async () => {
 	const now = new Date();
 	console.log('Cron job executed: ', now.toISOString());
 
@@ -33,6 +34,14 @@ job.start();
  */
 export const globalUserUpdateQueue = async (fid: string) => {
 	const now = new Date();
+
+	const lastSynchedData = await getLastSynched(fid);
+
+	// If lastSynched exists and is less than 30 minutes ago, skip adding to queue
+	if (lastSynchedData.lastSynched && now.getTime() - lastSynchedData.lastSynched.getTime() < 30 * 60 * 1000) {
+		console.log(`Skipping ${fid} as it was synched less than 30 minutes ago.`);
+		return;
+	}
 
 	const options: Intl.DateTimeFormatOptions = { timeZone: 'America/New_York', timeZoneName: 'short' };
 	console.log(`=== Starting global user update for ${fid} at ${now.toLocaleString('en-US', options)} ===`);
@@ -154,4 +163,30 @@ export const globalUserUpdateQueue = async (fid: string) => {
 
 	// Optionally, you can process the results array to take further actions if needed
 	console.log('Job addition results:', results);
+};
+
+const getLastSynched = async (fid: string) => {
+	// use firebase to get the value of user_stats (collection) > fid (document) > lastSynched
+
+	// convert fid to string and check if it is a non-empty string
+
+	let fidString = fid.toString();
+
+	if (!fidString || typeof fidString !== 'string' || fidString.trim() === '') {
+		console.log('Received FID in getLastSynched', fid);
+		throw new Error('Invalid fid. Fid must be a non-empty string.');
+	}
+	// check if the document exists in collection user_stats, if not return date 0
+
+	const doc = await firebase.db.collection('user_stats').doc(fidString).get();
+	const data = doc.data();
+
+	if (!data || !data.lastSynched) {
+		return { lastSynched: new Date(0), message: 'No previous sync found' };
+	}
+
+	// Convert lastSynched to a Date object
+	data.lastSynched = new Date(data.lastSynched);
+
+	return data;
 };

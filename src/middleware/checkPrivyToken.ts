@@ -4,6 +4,7 @@ import getWhitelist from '../utils/getWhitelist';
 import { addUserToDB } from '../db/addUserToDB';
 import { privyUserObjectAdapter } from '../utils/adapters/privy';
 import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
+import { globalUserUpdateQueue } from '../crons/cronJobs';
 
 const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) => {
 	const accessToken = req?.headers?.authorization?.replace('Bearer ', '');
@@ -43,8 +44,6 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 			// log the user obtained from privy
 			console.log(`User obtained from privy:`, privyUser.fid);
 
-			const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue: ${fid}`, fid);
-
 			if (!whitelist.includes(fid)) {
 				console.log(`${fid} is not in the whitelist`);
 				return res.status(403).json({
@@ -52,6 +51,7 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 				});
 			} else {
 				await addUserToDB(privyUser);
+				await globalUserUpdateQueue(fid);
 				console.log(`${fid} is in the whitelist`);
 			}
 		}
