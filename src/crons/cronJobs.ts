@@ -89,6 +89,37 @@ export const globalUserUpdateQueue = async (fid: string) => {
 			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 180d`,
 		},
 		{
+			queue: intervalListsQueue,
+			name: `impactUnfollowers: ${fid} - 180d`,
+			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.impactUnfollowers },
+			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 180d`,
+		},
+		// add mentions interval list job
+		{
+			queue: intervalListsQueue,
+			name: `topMentions: ${fid} - 24h`,
+			data: { fid, duration: Duration.HOURS_24, label: '24h', type: intervalListsJobType.topMentions },
+			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 24h`,
+		},
+		{
+			queue: intervalListsQueue,
+			name: `topMentions: ${fid} - 7d`,
+			data: { fid, duration: Duration.DAYS_7, label: '7d', type: intervalListsJobType.topMentions },
+			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 7d`,
+		},
+		{
+			queue: intervalListsQueue,
+			name: `topMentions: ${fid} - 30d`,
+			data: { fid, duration: Duration.DAYS_30, label: '30d', type: intervalListsJobType.topMentions },
+			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 30d`,
+		},
+		{
+			queue: intervalListsQueue,
+			name: `topMentions: ${fid} - 180d`,
+			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.topMentions },
+			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 180d`,
+		},
+		{
 			queue: intervalAggregationsQueue,
 			name: `intervalFollowerCount: ${fid}`,
 			data: { fid, type: intervalJobType.followerCount },
