@@ -99,14 +99,14 @@ router.get('/get-chart1', async (req, res) => {
 	}
 });
 
-router.get('/update-user', async (req, res) => {
+router.get('/update-user', checkPrivyToken, async (req, res) => {
 	const fid = req.query.fid as string;
 
 	if (!fid) {
 		return res.status(400).json({ error: 'Invalid fid' });
 	}
 
-	const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue ${fid}`, { fid });
+	// const job = await syncAlfaFrensQueue.add(`syncAlfaFrensQueue ${fid}`, { fid });
 	await globalUserUpdateQueue(fid);
 
 	res.json({

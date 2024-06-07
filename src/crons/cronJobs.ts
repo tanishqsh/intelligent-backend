@@ -11,8 +11,8 @@ import { firebase } from '../firebase/firebase';
 // Log message indicating that the cron has been loaded
 console.log('Cron jobs are ready 🟡');
 
-// This cron job will run every 10 minutes
-const job = new CronJob('0 */10 * * * *', async () => {
+// This cron job runs every 30 minutes
+const job = new CronJob('0 */30 * * * *', async () => {
 	const now = new Date();
 	console.log('Cron job executed: ', now.toISOString());
 
@@ -32,14 +32,17 @@ job.start();
  * Add a user to the queue
  * @param fid
  */
-export const globalUserUpdateQueue = async (fid: string) => {
+export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = false) => {
 	const now = new Date();
 
 	const lastSynchedData = await getLastSynched(fid);
 
-	// If lastSynched exists and is less than 30 minutes ago, skip adding to queue
-	if (lastSynchedData.lastSynched && now.getTime() - lastSynchedData.lastSynched.getTime() < 30 * 60 * 1000) {
-		console.log(`Skipping ${fid} as it was synched less than 30 minutes ago.`);
+	// If isSingle is true, check if lastSynched exists and is less than 30 minutes ago, skip adding to queue
+	// If isSingle is false, check if lastSynched exists and is less than 6 hours ago, skip adding to queue
+	const syncInterval = isSingle ? 30 * 60 * 1000 : 6 * 60 * 60 * 1000;
+	if (lastSynchedData.lastSynched && now.getTime() - lastSynchedData.lastSynched.getTime() < syncInterval) {
+		const intervalText = isSingle ? '30 minutes' : '6 hours';
+		console.log(`Skipping ${fid} as it was synched less than ${intervalText} ago.`);
 		return;
 	}
 
