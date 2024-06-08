@@ -4,7 +4,7 @@ module.exports = {
       name: 'intelligent-backend',
       script: 'dist/index.js',
       watch: true,
-      instances: 'max',
+      instances: '8',
       env: {
         NODE_ENV: 'development',
       },
