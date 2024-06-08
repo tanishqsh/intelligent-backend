@@ -12,6 +12,7 @@ let queueName = 'mimir_userTopCasts';
 
 const userTopCastsQueue = new Queue(queueName, { connection: connectionOptions });
 
+// store top casts in firebase
 const storeTopCastsInFirebase = async (fid: number, rows: any[], durationLabel: string) => {
 	const userStatRef = firebase.db.collection('user_stats').doc(fid.toString());
 	const batch = firebase.db.batch();
@@ -23,6 +24,7 @@ const storeTopCastsInFirebase = async (fid: number, rows: any[], durationLabel: 
 	console.log(`📦 [UserTopCastsWorker] Top casts stored in Firebase for FID: ${fid}, Label: ${durationLabel}`);
 };
 
+// processes the jobs in the userTopCastsQueue
 const jobProcess = async (job: Job) => {
 	const { fid, duration, label } = job.data;
 
