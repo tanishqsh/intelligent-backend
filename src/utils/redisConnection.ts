@@ -33,7 +33,7 @@ const connectionOptions: RedisOptions = {
 	},
 };
 
-export const redis = new Redis(connectionOptions);
+const redis = new Redis(connectionOptions);
 
 redis.on('connect', () => {
 	console.log('Redis is connected on:', env);
