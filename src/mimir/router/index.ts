@@ -1,11 +1,9 @@
 import express from 'express';
 import { query } from '../mimir';
 import { chart1Query180D, chart1Query24D, chart1Query30D, chart1Query7D } from '../sql/chart1Query';
-import { globalUserUpdateQueue } from '../../crons/cronJobs';
 import Duration from '../sql/castsQueries/Duration';
-import { firebase } from '../../firebase/firebase';
 import checkPrivyToken from '../../middleware/checkPrivyToken';
-import syncAlfaFrensQueue from '../../queues/syncAlfaFrensQueue';
+import { globalUserUpdateQueue } from '../jobs/globalUserUpdateQueue';
 
 const router = express.Router();
 

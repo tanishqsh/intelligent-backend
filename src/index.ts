@@ -12,7 +12,7 @@ import degenRouter from './routes/degen';
 import mimirRouter from './mimir/router/';
 import { initializeAirstack } from './airstack/airstack';
 
-// importing worker queues
+// importing worker queues – Do not remove these imports, they are necessary for the queues to work
 import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
 import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
 import syncAlfaFrensQueue from './queues/syncAlfaFrensQueue';

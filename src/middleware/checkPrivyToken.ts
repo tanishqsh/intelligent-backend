@@ -3,8 +3,7 @@ import privyClient from '../utils/privyClient';
 import getWhitelist from '../utils/getWhitelist';
 import { addUserToDB } from '../db/addUserToDB';
 import { privyUserObjectAdapter } from '../utils/adapters/privy';
-import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
-import { globalUserUpdateQueue } from '../crons/cronJobs';
+import { globalUserUpdateQueue } from '../mimir/jobs/globalUserUpdateQueue';
 
 const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) => {
 	const accessToken = req?.headers?.authorization?.replace('Bearer ', '');
