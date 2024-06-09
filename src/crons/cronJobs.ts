@@ -4,7 +4,7 @@ import { globalUserUpdateQueue } from '../mimir/jobs/globalUserUpdateQueue';
 
 console.log('Cron jobs are ready 🟡');
 
-// This cron job runs every 30 minutes
+// This cron job will run every 30 minutes
 const job = new CronJob('0 */30 * * * *', async () => {
 	const now = new Date();
 	console.log('Cron job executed: ', now.toISOString());

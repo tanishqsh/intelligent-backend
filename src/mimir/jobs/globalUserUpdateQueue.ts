@@ -1,3 +1,4 @@
+import { Queue } from 'bullmq';
 import { firebase } from '../../firebase/firebase';
 import syncAlfaFrensQueue from '../../queues/syncAlfaFrensQueue';
 import Duration from '../sql/castsQueries/Duration';
@@ -31,98 +32,98 @@ export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = fal
 		{ queue: followerCountQueue, name: `syncFollowerCount: ${fid}`, data: fid, log: `🚄 FOLLOWER COUNT SYNC QUEUE – FID: ${fid}` },
 		{
 			queue: intervalListsQueue,
-			name: `userTopCast24h: ${fid}`,
+			name: `userTopCast24h_${fid}`,
 			data: { fid, duration: Duration.HOURS_24, label: '24h', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 24h`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `userTopCast7d: ${fid}`,
+			name: `userTopCast7d_${fid}`,
 			data: { fid, duration: Duration.DAYS_7, label: '7d', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 7d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `userTopCast30d: ${fid}`,
+			name: `userTopCast30d_${fid}`,
 			data: { fid, duration: Duration.DAYS_30, label: '30d', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 30d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `userTopCast180d: ${fid}`,
+			name: `userTopCast180d_${fid}`,
 			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.topCasts },
 			log: `🚄 USER TOP CASTS SYNC QUEUE – FID: ${fid} - 180d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `impactFollowers: ${fid} - 24h`,
+			name: `impactFollowers_${fid}_24h`,
 			data: { fid, duration: Duration.HOURS_24, label: '24h', type: intervalListsJobType.impactFollowers },
 			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 24h`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `impactFollowers: ${fid} - 7d`,
+			name: `impactFollowers_${fid}_7d`,
 			data: { fid, duration: Duration.DAYS_7, label: '7d', type: intervalListsJobType.impactFollowers },
 			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 7d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `impactFollowers: ${fid} - 30d`,
+			name: `impactFollowers_${fid}_30d`,
 			data: { fid, duration: Duration.DAYS_30, label: '30d', type: intervalListsJobType.impactFollowers },
 			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 30d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `impactFollowers: ${fid} - 180d`,
+			name: `impactFollowers_${fid}_180d`,
 			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.impactFollowers },
 			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 180d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `impactUnfollowers: ${fid} - 180d`,
+			name: `impactUnfollowers_${fid}_180d`,
 			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.impactUnfollowers },
 			log: `🚄 IMPACT FOLLOWERS SYNC QUEUE – FID: ${fid} - 180d`,
 		},
 		// add mentions interval list job
 		{
 			queue: intervalListsQueue,
-			name: `topMentions: ${fid} - 24h`,
+			name: `topMentions_${fid}_24h`,
 			data: { fid, duration: Duration.HOURS_24, label: '24h', type: intervalListsJobType.topMentions },
 			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 24h`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `topMentions: ${fid} - 7d`,
+			name: `topMentions_${fid}_7d`,
 			data: { fid, duration: Duration.DAYS_7, label: '7d', type: intervalListsJobType.topMentions },
 			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 7d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `topMentions: ${fid} - 30d`,
+			name: `topMentions_${fid}_30d`,
 			data: { fid, duration: Duration.DAYS_30, label: '30d', type: intervalListsJobType.topMentions },
 			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 30d`,
 		},
 		{
 			queue: intervalListsQueue,
-			name: `topMentions: ${fid} - 180d`,
+			name: `topMentions_${fid}_180d`,
 			data: { fid, duration: Duration.DAYS_180, label: '180d', type: intervalListsJobType.topMentions },
 			log: `🚄 TOP MENTIONS SYNC QUEUE – FID: ${fid} - 180d`,
 		},
 		{
 			queue: intervalAggregationsQueue,
-			name: `intervalFollowerCount: ${fid}`,
+			name: `intervalFollowerCount_${fid}`,
 			data: { fid, type: intervalJobType.followerCount },
 			log: `🚄 INTERVAL FOLLOWER COUNT SYNC QUEUE – FID: ${fid}`,
 		},
 		{
 			queue: intervalAggregationsQueue,
-			name: `intervalAggregations: ${fid}`,
+			name: `intervalAggregations_${fid}`,
 			data: { fid, type: intervalJobType.reactions },
 			log: `🚄 INTERVAL AGGREGATIONS SYNC QUEUE – FID: ${fid} - TYPE: reactions`,
 		},
 		{
 			queue: intervalAggregationsQueue,
-			name: `intervalAggregations: ${fid}`,
+			name: `intervalAggregations_${fid}`,
 			data: { fid, type: intervalJobType.mentions },
 			log: `🚄 INTERVAL AGGREGATIONS SYNC QUEUE – FID: ${fid} - TYPE: mentions`,
 		},
@@ -131,8 +132,13 @@ export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = fal
 	const results = await Promise.all(
 		jobs.map(async (job) => {
 			try {
-				await job.queue.add(job.name, job.data);
-				console.log(`${job.log} - Successfully added`);
+				const existingJob = await job.queue.getJob(job.name);
+				if (!existingJob) {
+					await job.queue.add(job.name, job.data);
+					console.log(`${job.log} - Successfully added`);
+				} else {
+					console.log(`${job.log} - Job already exists`);
+				}
 				return { job: job.name, status: 'success' };
 			} catch (error) {
 				console.error(`${job.log} - Failed to add`, error);

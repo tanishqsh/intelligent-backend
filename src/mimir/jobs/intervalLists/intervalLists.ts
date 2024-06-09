@@ -41,3 +41,11 @@ const jobProcess = async (job: Job) => {
 const intervalListsWorker = new Worker(queueName, jobProcess, { connection: connectionOptions });
 
 export default intervalListsQueue;
+
+intervalListsWorker.on('completed', (job) => {
+	console.log(`Job ${job.id} completed successfully`);
+});
+
+intervalListsWorker.on('failed', (job, err) => {
+	console.error(`Job ${job?.id} failed with error: ${err.message}`);
+});

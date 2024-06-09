@@ -39,3 +39,11 @@ const process = async (job: Job) => {
 const intervalAggregationsWorker = new Worker(queueName, process, { connection: connectionOptions });
 
 export default intervalAggregationsQueue;
+
+intervalAggregationsWorker.on('completed', (job) => {
+	console.log(`Job ${job.id} completed successfully`);
+});
+
+intervalAggregationsWorker.on('failed', (job, err) => {
+	console.error(`Job ${job?.id} failed with error: ${err.message}`);
+});
