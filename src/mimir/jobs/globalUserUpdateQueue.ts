@@ -134,7 +134,7 @@ export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = fal
 			try {
 				const existingJob = await job.queue.getJob(job.name);
 				if (!existingJob) {
-					await job.queue.add(job.name, job.data);
+					await job.queue.add(job.name, job.data, { removeOnComplete: true, removeOnFail: true });
 					console.log(`${job.log} - Successfully added`);
 				} else {
 					console.log(`${job.log} - Job already exists`);
