@@ -16,7 +16,6 @@ import { initializeAirstack } from './airstack/airstack';
 import fetchRepliesFromCastQueue from './queues/fetchRepliesFromCastQueue';
 import fetchLikesFromCastQueue from './queues/fetchReactionsFromCastQueue';
 import syncAlfaFrensQueue from './queues/syncAlfaFrensQueue';
-import './crons/cronJobs';
 
 // mimir
 import { initializeMimir, query } from './mimir/mimir';
