@@ -9,13 +9,12 @@ const addUserToDB = async (user: any) => {
 	const userSnapshot = await userRef.get();
 
 	if (userSnapshot.exists) {
-		console.log('User already exists in the database. Updating lastSyncedAt field');
+		console.log('User already exists in the database.');
 		try {
 			await userRef.update({
 				...user,
-				lastSyncedAt: firebase.FieldValue.serverTimestamp(),
+				lastActive: firebase.FieldValue.serverTimestamp(),
 			});
-			console.log('User updated successfully');
 		} catch (error) {
 			console.error('Error updating user in the database:', error);
 		}

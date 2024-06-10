@@ -15,12 +15,10 @@ export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = fal
 
 	const lastSynchedData = await getLastSynched(fid);
 
-	// If isSingle is true, check if lastSynched exists and is less than 30 minutes ago, skip adding to queue
-	// If isSingle is false, check if lastSynched exists and is less than 6 hours ago, skip adding to queue
-	const syncInterval = isSingle ? 30 * 60 * 1000 : 6 * 60 * 60 * 1000;
+	const syncInterval = 60 * 60 * 1000;
 	if (lastSynchedData.lastSynched && now.getTime() - lastSynchedData.lastSynched.getTime() < syncInterval) {
-		const intervalText = isSingle ? '30 minutes' : '6 hours';
-		console.log(`Skipping ${fid} as it was synched less than ${intervalText} ago.`);
+		const intervalText = '60 minutes';
+		console.log(`Skipping ${fid} as stats were synched less than ${intervalText} ago.`);
 		return;
 	}
 

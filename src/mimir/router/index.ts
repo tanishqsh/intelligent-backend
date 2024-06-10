@@ -97,7 +97,7 @@ router.get('/get-chart1', async (req, res) => {
 	}
 });
 
-router.get('/update-user', checkPrivyToken, async (req, res) => {
+router.get('/sync-user-data', checkPrivyToken, async (req, res) => {
 	const fid = req.query.fid as string;
 
 	if (!fid) {
@@ -108,7 +108,8 @@ router.get('/update-user', checkPrivyToken, async (req, res) => {
 	await globalUserUpdateQueue(fid, true);
 
 	res.json({
-		message: 'User added to the queue',
+		message: 'User sync job added to the queue',
+		success: true,
 	});
 });
 
