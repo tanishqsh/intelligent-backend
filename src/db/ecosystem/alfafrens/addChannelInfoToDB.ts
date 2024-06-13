@@ -1,4 +1,6 @@
+import { fetchQuery } from '@airstack/node';
 import { firebase } from '../../../firebase/firebase';
+import { getUserByFID } from '../../../utils/airstack-query-constructors/getUserByFID';
 
 const addChannelInfoToDB = async (userInfo: any) => {
 	console.log(`=============================== Attempting to add channel info for user ${userInfo.fid}`);
@@ -59,7 +61,6 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 	// prepare the db reference
 	const usersRef = firebase.db.collection('users');
 	const userRef = usersRef.doc(fid.toString());
-
 	const userSnapshot = await userRef.get();
 
 	if (userSnapshot.exists) {
@@ -107,8 +108,12 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 			}
 		} else {
 			try {
+				let result = await fetchQuery(getUserByFID(member.fid));
+				const userData = result?.data?.Socials?.Social[0];
+
 				await memberRef.set(
 					{
+						fc_data: userData,
 						...member,
 						lastSyncedAt: firebase.FieldValue.serverTimestamp(),
 						timestamp: firebase.FieldValue.serverTimestamp(),
