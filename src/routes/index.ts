@@ -9,6 +9,7 @@ import fetchRepliesFromCastQueue, { fetchReplies } from '../queues/fetchRepliesF
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
 import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues/fetchReactionsFromCastQueue';
 import checkPrivyToken from '../middleware/checkPrivyToken';
+import { completeAFSubs } from '../ecosystems/completeAFSubs';
 
 const router = express.Router();
 
