@@ -10,10 +10,17 @@ import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
 import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues/fetchReactionsFromCastQueue';
 import checkPrivyToken from '../middleware/checkPrivyToken';
 import { completeAFSubs } from '../ecosystems/completeAFSubs';
+import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
+	res.json({
+		message: 'API route 🟡',
+	});
+});
+
+router.get('/test', async (req, res) => {
 	res.json({
 		message: 'API route 🟡',
 	});
