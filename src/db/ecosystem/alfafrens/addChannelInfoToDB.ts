@@ -113,8 +113,8 @@ const addChannelMembersToDB = async (fid: any, channelData: any, allMembers: any
 
 				await memberRef.set(
 					{
-						fc_data: userData,
 						...member,
+						fc_data: userData,
 						lastSyncedAt: firebase.FieldValue.serverTimestamp(),
 						timestamp: firebase.FieldValue.serverTimestamp(),
 					},

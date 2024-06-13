@@ -49,7 +49,7 @@ async function completeAFSubs({ fid }: { fid: number }) {
 				const subscriberDocRef = collectionRef.doc(subscriber);
 				await subscriberDocRef.set(
 					{
-						...userData,
+						fc_data: userData,
 						lastSyncedAt: firebase.FieldValue.serverTimestamp(),
 					},
 					{ merge: true }
