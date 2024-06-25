@@ -20,6 +20,7 @@ import syncAlfaFrensQueue from './queues/syncAlfaFrensQueue';
 // mimir
 import { initializeMimir, query } from './mimir/mimir';
 import { getFollowersCount } from './mimir/sql/followersQueries';
+import { getAllChannelFollowers } from './utils/custom/requests';
 
 initializeAirstack();
 initializeMimir();
@@ -42,6 +43,14 @@ app.get('/', async (req: Request, res: Response) => {
 	res.json({
 		message: '🟡',
 		whitelist,
+	});
+});
+
+app.get('/request', async (req: Request, res: Response) => {
+	const fid = 2341;
+
+	res.json({
+		message: '🟡',
 	});
 });
 
