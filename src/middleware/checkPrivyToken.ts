@@ -55,6 +55,12 @@ const checkPrivyToken = async (req: Request, res: Response, next: NextFunction) 
 			}
 		}
 	} catch (error) {
+		// if the token verification fails, log the error
+
+		return res.status(401).json({
+			message: 'Unauthorized: Token verification failed',
+		});
+
 		console.log(`Token verification failed with error ${error}.`);
 	}
 	next();
