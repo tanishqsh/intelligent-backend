@@ -8,6 +8,7 @@ function getCastMetaByHashQuery(hash: string) {
       channel {
         channelId
         name
+        imageUrl
       }
       numberOfReplies
       url
