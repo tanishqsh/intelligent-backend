@@ -88,7 +88,7 @@ JOIN follower_counts_mv fc ON rf.fid = fc.fid
 JOIN profiles p ON rf.fid = p.fid
 WHERE fc.follower_count > 10000
 ORDER BY fc.follower_count DESC
-LIMIT 25;
+LIMIT 10;
     `;
 }
 
@@ -114,6 +114,6 @@ JOIN follower_counts_mv fc ON ru.fid = fc.fid
 JOIN profiles p ON ru.fid = p.fid
 WHERE fc.follower_count > 10000
 ORDER BY fc.follower_count DESC
-LIMIT 25;
+LIMIT 10;
     `;
 }
