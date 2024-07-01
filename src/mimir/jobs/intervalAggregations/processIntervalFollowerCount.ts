@@ -29,7 +29,9 @@ const processIntervalFollowerCount = async (fid: number) => {
 					gain_prev_180d: rows[0].followers_gain_prev_180d,
 				},
 			},
-			{ merge: true }
+			{
+				merge: true,
+			}
 		);
 	} catch (error) {
 		console.error('Error adding follower count interval to Firebase:', error);

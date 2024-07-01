@@ -36,6 +36,19 @@ function getCastMetaByHashQuery(hash: string) {
         text
         url
       }
+      frame {
+        frameUrl
+        imageUrl
+      }
+      mentions {
+        profile {
+          profileImage
+          profileHandle
+          profileDisplayName
+          isFarcasterPowerUser
+        }
+        position
+      }
     }
   }
 }

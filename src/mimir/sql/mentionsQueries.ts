@@ -65,6 +65,7 @@ SELECT
     mc.username,
     mc.display,
     mc.profile_picture,
+    mc.hash AS hash,
     COALESCE(cr.reaction_count, 0) AS reaction_count
 FROM 
     mentioned_casts mc

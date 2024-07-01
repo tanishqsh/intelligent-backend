@@ -29,7 +29,9 @@ const processIntervalMentions = async (fid: number) => {
 					mentions_prev_180d: rows[0].mentions_prev_180d,
 				},
 			},
-			{ merge: true }
+			{
+				merge: true,
+			}
 		);
 	} catch (error) {
 		console.error('Error adding mentions interval count to Firebase:', error);
