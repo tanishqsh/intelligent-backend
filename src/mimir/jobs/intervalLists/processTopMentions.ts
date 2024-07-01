@@ -1,3 +1,5 @@
+import { fetchQuery } from '@airstack/node';
+import { getCastMetaByHashQuery } from '../../../utils/airstack-query-constructors/getCastMetaByHashQuery';
 import { query } from '../../mimir';
 import Duration from '../../sql/castsQueries/Duration';
 import { getTopMentionsByDuration } from '../../sql/mentionsQueries';
@@ -23,7 +25,35 @@ const processTopMentions = async (fid: number, duration: Duration, label: string
 		return;
 	}
 
+	const casts = impactResult.rows;
+
+	// loop thru and print cast_hash
+	for (const cast of casts) {
+		console.log(cast);
+		let meta = null;
+		try {
+			meta = await getCastMetadata(cast.hash);
+			// add meta to cast object
+			cast.meta = meta;
+		} catch (error) {
+			console.error(`Failed to fetch metadata for cast with hash ${cast.cast_hash}:`, error);
+		}
+	}
+
 	await storeTopMentionsInFirebase(fid, impactResult.rows, label);
+};
+
+const getCastMetadata = async (hash: any) => {
+	const castHash = hash;
+
+	let q = '';
+	let castMetaResult: any;
+
+	q = getCastMetaByHashQuery(castHash);
+	castMetaResult = await fetchQuery(q);
+	castMetaResult = castMetaResult?.data?.FarcasterCasts?.Cast[0];
+
+	return castMetaResult;
 };
 
 export default processTopMentions;

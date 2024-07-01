@@ -29,7 +29,9 @@ const processIntervalReactions = async (fid: number) => {
 					reactions_prev_180d: rows[0].reactions_prev_180d,
 				},
 			},
-			{ merge: true }
+			{
+				merge: true,
+			}
 		);
 	} catch (error) {
 		console.error('Error adding reactions interval count to Firebase:', error);
