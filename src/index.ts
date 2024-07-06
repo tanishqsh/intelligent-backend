@@ -67,6 +67,19 @@ app.get('/request', async (req: Request, res: Response) => {
 	});
 });
 
+app.get('/request2', async (req: Request, res: Response) => {
+	const addresses = ['tani.eth'];
+
+	const get_token_balances_query = getTokenBalancesByAddress(addresses);
+
+	const result = await fetchQueryWithPagination(get_token_balances_query);
+
+	res.json({
+		data: result,
+		message: '🟡',
+	});
+});
+
 app.get('/mimir', async (req: Request, res: Response) => {
 	const fid = 2341;
 	const get_followers_by_fid_query = getFollowersCount(fid);
