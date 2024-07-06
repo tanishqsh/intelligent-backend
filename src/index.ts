@@ -21,12 +21,14 @@ import syncAlfaFrensQueue from './queues/syncAlfaFrensQueue';
 import { initializeMimir, query } from './mimir/mimir';
 import { getFollowersCount } from './mimir/sql/followersQueries';
 import { getAllChannelFollowers } from './utils/custom/requests';
+import { getTokenBalancesByAddress } from './utils/airstack-query-constructors/getTokenBalancesByAddress';
+import { fetchQueryWithPagination } from '@airstack/node';
 
 initializeAirstack();
 initializeMimir();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3024;
 const cors = require('cors');
 
 app.use(express.json());
@@ -47,9 +49,20 @@ app.get('/', async (req: Request, res: Response) => {
 });
 
 app.get('/request', async (req: Request, res: Response) => {
-	const fid = 2341;
+	const addresses = req.body.addresses;
+
+	if (!addresses || !Array.isArray(addresses)) {
+		return res.status(400).json({
+			message: 'Invalid request: addresses must be an array',
+		});
+	}
+
+	const get_token_balances_query = getTokenBalancesByAddress(addresses);
+
+	const result = await fetchQueryWithPagination(get_token_balances_query);
 
 	res.json({
+		data: result,
 		message: '🟡',
 	});
 });
