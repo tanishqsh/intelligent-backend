@@ -48,7 +48,7 @@ app.get('/', async (req: Request, res: Response) => {
 	});
 });
 
-app.get('/request', async (req: Request, res: Response) => {
+app.post('/request', async (req: Request, res: Response) => {
 	const addresses = req.body.addresses;
 
 	if (!addresses || !Array.isArray(addresses)) {
