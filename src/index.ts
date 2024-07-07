@@ -23,6 +23,7 @@ import { getFollowersCount } from './mimir/sql/followersQueries';
 import { getAllChannelFollowers } from './utils/custom/requests';
 import { getTokenBalancesByAddress } from './utils/airstack-query-constructors/getTokenBalancesByAddress';
 import { fetchQueryWithPagination } from '@airstack/node';
+import { firebase } from './firebase/firebase';
 
 initializeAirstack();
 initializeMimir();
