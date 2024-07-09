@@ -15,8 +15,8 @@ export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = fal
 
 	const lastSynchedData = await getLastSynched(fid);
 
-	const syncInterval = 60 * 60 * 1000;
-	const intervalText = '60 minutes';
+	const syncInterval = 1000 * 60 * 20; // 20 minutes
+	const intervalText = '20 minutes';
 	if (lastSynchedData.lastSynched && now.getTime() - lastSynchedData.lastSynched.getTime() < syncInterval) {
 		console.log(`Skipping ${fid} as stats were synched less than ${intervalText} ago.`);
 		return;
