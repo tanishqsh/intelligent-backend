@@ -29,7 +29,6 @@ const processTopMentions = async (fid: number, duration: Duration, label: string
 
 	// loop thru and print cast_hash
 	for (const cast of casts) {
-		console.log(cast);
 		let meta = null;
 		try {
 			meta = await getCastMetadata(cast.hash);

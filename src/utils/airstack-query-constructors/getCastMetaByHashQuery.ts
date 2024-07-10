@@ -35,6 +35,9 @@ function getCastMetaByHashQuery(hash: string) {
         }
         text
         url
+        quotedCast {
+          url
+        }
       }
       frame {
         frameUrl
@@ -49,6 +52,7 @@ function getCastMetaByHashQuery(hash: string) {
         }
         position
       }
+      embeds
     }
   }
 }
