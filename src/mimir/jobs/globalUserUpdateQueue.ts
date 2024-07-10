@@ -12,7 +12,6 @@ import intervalListsQueue, { intervalListsJobType } from './intervalLists/interv
  */
 export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = false) => {
 	const now = new Date();
-
 	const lastSynchedData = await getLastSynched(fid);
 
 	const syncInterval = 1000 * 60 * 20; // 20 minutes
@@ -124,6 +123,12 @@ export const globalUserUpdateQueue = async (fid: string, isSingle: boolean = fal
 			name: `intervalAggregations_${fid}`,
 			data: { fid, type: intervalJobType.mentions },
 			log: `🚄 INTERVAL AGGREGATIONS SYNC QUEUE – FID: ${fid} - TYPE: mentions`,
+		},
+		{
+			queue: intervalAggregationsQueue,
+			name: `intervalAggregations_${fid}`,
+			data: { fid, type: intervalJobType.totalCasts },
+			log: `🚄 INTERVAL AGGREGATIONS SYNC QUEUE – FID: ${fid} - TYPE: totalCasts`,
 		},
 	];
 

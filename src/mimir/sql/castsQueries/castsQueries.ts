@@ -44,3 +44,28 @@ ORDER BY engagement_count DESC
 LIMIT 10;
 `;
 }
+
+/**
+ *
+ * @param fid - Farcaster ID
+ * @returns SQL query to get the total number of casts of a user in different intervals of time
+ */
+
+export function getIntervalCastCount(fid: number): string {
+	return `
+        SELECT
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '24 hours') AS casts_24h,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '48 hours' AND timestamp < NOW() - INTERVAL '24 hours') AS casts_prev_24h,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '7 days') AS casts_7d,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '14 days' AND timestamp < NOW() - INTERVAL '7 days') AS casts_prev_7d,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '30 days') AS casts_30d,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '60 days' AND timestamp < NOW() - INTERVAL '30 days') AS casts_prev_30d,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '180 days') AS casts_180d,
+            COUNT(*) FILTER (WHERE timestamp >= NOW() - INTERVAL '360 days' AND timestamp < NOW() - INTERVAL '180 days') AS casts_prev_180d
+        FROM
+            casts
+        WHERE
+            fid = ${fid}
+            AND deleted_at IS NULL;
+    `;
+}
