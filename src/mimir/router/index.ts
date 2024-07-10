@@ -4,6 +4,7 @@ import { chart1Query180D, chart1Query24D, chart1Query30D, chart1Query7D } from '
 import Duration from '../sql/castsQueries/Duration';
 import checkPrivyToken from '../../middleware/checkPrivyToken';
 import { globalUserUpdateQueue } from '../jobs/globalUserUpdateQueue';
+import castCountController from '../controllers/getCastCount';
 
 const router = express.Router();
 
@@ -27,6 +28,8 @@ router.get('/', async (req, res) => {
 		message: 'Mimir answers you 🟡',
 	});
 });
+
+router.get('/get-cast-charts', checkPrivyToken, castCountController);
 
 router.get('/get-chart1', async (req, res) => {
 	const fid = Number(req.query.fid);
@@ -80,6 +83,7 @@ router.get('/get-chart1', async (req, res) => {
 				id: 'Followers',
 				data: followersData,
 			},
+
 			// Add likes and recasts data here when those functions are implemented
 		];
 
