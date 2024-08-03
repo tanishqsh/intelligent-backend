@@ -53,6 +53,11 @@ function getCastMetaByHashQuery(hash: string) {
         position
       }
       embeds
+      socialCapitalValue {
+        formattedValue
+        hash
+        rawValue
+      }
     }
   }
 }
