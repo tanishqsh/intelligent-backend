@@ -25,6 +25,11 @@ function getReplyCastMetaByHashQuery(hash: string) {
         text
         url
       }
+      socialCapitalValue {
+        formattedValue
+        hash
+        rawValue
+      }
       parentCast {
         castedAtTimestamp
         castedBy {
