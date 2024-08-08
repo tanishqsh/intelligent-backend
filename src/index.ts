@@ -96,6 +96,7 @@ app.get('/mimir', async (req: Request, res: Response) => {
 		message: '🟡',
 	});
 });
+
 app.use('/api', router);
 app.use('/api/alfafrens', alfafrensRouter);
 app.use('/api/user', userRouter);
