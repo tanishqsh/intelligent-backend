@@ -11,6 +11,7 @@ import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues
 import checkPrivyToken from '../middleware/checkPrivyToken';
 import { completeAFSubs } from '../ecosystems/completeAFSubs';
 import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
+import { populateBasedGamesData } from '../utils/custom/populateBasedGamesData';
 
 const router = express.Router();
 
@@ -24,6 +25,21 @@ router.get('/test', async (req, res) => {
 	res.json({
 		message: 'API route 🟡',
 	});
+});
+
+router.get('/fbi', async (req, res) => {
+	try {
+		const data = await populateBasedGamesData();
+		res.json({
+			message: 'Data populated successfully',
+			data: data,
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: 'An error occurred while populating data',
+			error: error,
+		});
+	}
 });
 
 router.get('/analyze', async (req, res) => {
