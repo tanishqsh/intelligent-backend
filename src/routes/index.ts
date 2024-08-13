@@ -5,13 +5,11 @@ import { CastParamType } from '@neynar/nodejs-sdk';
 import { fetchQuery } from '@airstack/node';
 import { getCastByUrlQuery } from '../utils/airstack-query-constructors/getCastByUrlQuery';
 import { addCastToDB } from '../db/addCastToDB';
-import fetchRepliesFromCastQueue, { fetchReplies } from '../queues/fetchRepliesFromCastQueue';
+import fetchRepliesFromCastQueue from '../queues/fetchRepliesFromCastQueue';
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
-import fetchReactionsFromCastQueue, { fetchLikes, fetchRecasts } from '../queues/fetchReactionsFromCastQueue';
+import fetchReactionsFromCastQueue from '../queues/fetchReactionsFromCastQueue';
 import checkPrivyToken from '../middleware/checkPrivyToken';
-import { completeAFSubs } from '../ecosystems/completeAFSubs';
-import syncAlfaFrensQueue from '../queues/syncAlfaFrensQueue';
-import { populateBasedGamesData } from '../utils/custom/populateBasedGamesData';
+import { populateBasedGamesData, populateBasedGamesData2 } from '../utils/custom/populateBasedGamesData';
 
 const router = express.Router();
 
@@ -30,6 +28,21 @@ router.get('/test', async (req, res) => {
 router.get('/fbi', async (req, res) => {
 	try {
 		const data = await populateBasedGamesData();
+		res.json({
+			message: 'Data populated successfully',
+			data: data,
+		});
+	} catch (error) {
+		res.status(500).json({
+			message: 'An error occurred while populating data',
+			error: error,
+		});
+	}
+});
+
+router.get('/fbi2', async (req, res) => {
+	try {
+		const data = await populateBasedGamesData2();
 		res.json({
 			message: 'Data populated successfully',
 			data: data,

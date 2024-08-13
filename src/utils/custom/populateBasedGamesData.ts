@@ -83,4 +83,64 @@ async function populateBasedGamesData(): Promise<any[]> {
 	return allPlayers;
 }
 
-export { populateBasedGamesData };
+async function populateBasedGamesData2() {
+	const url = 'https://tower-game-backend.vercel.app/api/getParticipants';
+	const secret = 'bc21be10b042875430edf454b4f50604a19789c5ae4478ea68ef7eb973246a3b'; // header x-secret-key
+
+	const response = await axios.get(url, {
+		headers: {
+			'x-secret-key': secret,
+		},
+	});
+
+	if (response.status !== 200) {
+		console.error('Unexpected response format or status:', response.status, response.data);
+		return [];
+	}
+
+	const users = response.data;
+	console.log(users);
+	users.participants.forEach((participant: any) => {
+		firebase.db.collection('based_games_new').doc(participant.tokenid).set(participant);
+	});
+
+	portData();
+
+	return users.participants;
+
+	// add each participant to firebase
+}
+
+async function portData() {
+	const basedGamesNewRef = firebase.db.collection('based_games_new');
+	const basedGamesRef = firebase.db.collection('based_games');
+
+	try {
+		const snapshot = await basedGamesNewRef.get();
+		if (snapshot.empty) {
+			console.log('No matching documents in based_games_new.');
+			return;
+		}
+
+		const batch = firebase.db.batch();
+
+		snapshot.forEach((doc) => {
+			const data = doc.data();
+			const tokenId = data.tokenid;
+
+			const basedGamesDocRef = basedGamesRef.doc(tokenId);
+
+			batch.update(basedGamesDocRef, {
+				is_alive: data.is_alive,
+				votes: data.votes,
+			});
+		});
+
+		await batch.commit();
+		console.log('Data ported successfully!');
+	} catch (error) {
+		console.error('Error porting data:', error);
+	}
+}
+
+export { populateBasedGamesData, populateBasedGamesData2 };
