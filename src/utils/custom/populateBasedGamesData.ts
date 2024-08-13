@@ -104,7 +104,7 @@ async function populateBasedGamesData2() {
 		firebase.db.collection('based_games_new').doc(participant.tokenid).set(participant);
 	});
 
-	portData();
+	await portData();
 
 	return users.participants;
 
