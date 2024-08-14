@@ -127,12 +127,14 @@ async function portData() {
 		snapshot.forEach((doc) => {
 			const data = doc.data();
 			const tokenId = data.tokenid;
+			const buildScore = data.buildScore || 'N/A';
 
 			const basedGamesDocRef = basedGamesRef.doc(tokenId);
 
 			batch.update(basedGamesDocRef, {
 				is_alive: data.is_alive,
 				votes: data.votes,
+				buildScore: buildScore,
 			});
 		});
 
