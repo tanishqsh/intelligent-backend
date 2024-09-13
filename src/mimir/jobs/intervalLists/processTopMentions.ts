@@ -32,6 +32,7 @@ const processTopMentions = async (fid: number, duration: Duration, label: string
 		let meta = null;
 		try {
 			meta = await getCastMetadata(cast.hash);
+
 			// add meta to cast object
 			cast.meta = meta;
 		} catch (error) {

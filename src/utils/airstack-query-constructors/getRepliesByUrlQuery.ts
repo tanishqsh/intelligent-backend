@@ -13,7 +13,6 @@ function getRepliesByUrlQuery(url: string, cursor: string = '') {
       numberOfRecasts
       numberOfReplies
       castedBy {
-        isFarcasterPowerUser
         connectedAddresses {
           address
           blockchain
