@@ -16,7 +16,6 @@ function getCastMetaByHashQuery(hash: string) {
         castedAtTimestamp
         castedBy {
           id
-          isFarcasterPowerUser
           profileDisplayName
           profileHandle
           profileImage
@@ -28,7 +27,6 @@ function getCastMetaByHashQuery(hash: string) {
         castedAtTimestamp
         castedBy {
           id
-          isFarcasterPowerUser
           profileDisplayName
           profileHandle
           profileImage
@@ -48,7 +46,6 @@ function getCastMetaByHashQuery(hash: string) {
           profileImage
           profileHandle
           profileDisplayName
-          isFarcasterPowerUser
         }
         position
       }

@@ -3,7 +3,6 @@ function getUserByFID(fid: string): string {
     query FarcasterUserData {
   Socials(input: {filter: {userId: {_eq: "${fid}"}}, blockchain: ethereum}) {
     Social {
-      isFarcasterPowerUser
       followerCount
       connectedAddresses {
         address

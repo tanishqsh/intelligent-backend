@@ -5,7 +5,6 @@ function getUserByAssociatedAddress(address: string): string {
     input: {blockchain: ethereum, filter: {userAssociatedAddresses: {_in: "${address}"}}}
   ) {
     Social {
-      isFarcasterPowerUser
       profileName
       profileImage
       profileDisplayName
