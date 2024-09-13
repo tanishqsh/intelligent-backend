@@ -17,7 +17,6 @@ function getReplyCastMetaByHashQuery(hash: string) {
         castedAtTimestamp
         castedBy {
           id
-          isFarcasterPowerUser
           profileDisplayName
           profileHandle
           profileImage
@@ -34,7 +33,6 @@ function getReplyCastMetaByHashQuery(hash: string) {
         castedAtTimestamp
         castedBy {
           id
-          isFarcasterPowerUser
           profileDisplayName
           profileHandle
           profileImage

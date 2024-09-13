@@ -9,7 +9,6 @@ import fetchRepliesFromCastQueue from '../queues/fetchRepliesFromCastQueue';
 import { fetchRepliesFromDBUsingUrl } from '../db/fetchRepliesFromDBUsingUrl';
 import fetchReactionsFromCastQueue from '../queues/fetchReactionsFromCastQueue';
 import checkPrivyToken from '../middleware/checkPrivyToken';
-import { populateBasedGamesData, populateBasedGamesData2 } from '../utils/custom/populateBasedGamesData';
 
 const router = express.Router();
 
@@ -23,36 +22,6 @@ router.get('/test', async (req, res) => {
 	res.json({
 		message: 'API route 🟡',
 	});
-});
-
-router.get('/fbi', async (req, res) => {
-	try {
-		const data = await populateBasedGamesData();
-		res.json({
-			message: 'Data populated successfully',
-			data: data,
-		});
-	} catch (error) {
-		res.status(500).json({
-			message: 'An error occurred while populating data',
-			error: error,
-		});
-	}
-});
-
-router.get('/fbi2', async (req, res) => {
-	try {
-		const data = await populateBasedGamesData2();
-		res.json({
-			message: 'Data populated successfully',
-			data: data,
-		});
-	} catch (error) {
-		res.status(500).json({
-			message: 'An error occurred while populating data',
-			error: error,
-		});
-	}
 });
 
 router.get('/analyze', async (req, res) => {
@@ -102,7 +71,6 @@ router.get('/get-replies', async (req, res) => {
 		});
 	}
 
-	// we first check with firebase if the cast is already present in the database
 	const castData = await fetchRepliesFromDBUsingUrl(castUrl, limit, startAfter);
 
 	if (castData) {
@@ -161,7 +129,6 @@ router.get('/sync-cast', checkPrivyToken, async (req, res) => {
 	}
 
 	// if there is no cast hash, it means it is not a farcaster cast, or the cast is not found, or it is NEW
-
 	if (!data?.FarcasterCasts?.Cast[0]?.hash) {
 		return res.status(404).json({
 			message: 'No data found for the given URL',

@@ -10,7 +10,6 @@ function getRecastsByUrlQuery(url: string, cursor: string = '') {
           address
           blockchain
         }
-        isFarcasterPowerUser
         profileDisplayName
         profileHandle
         profileImage
